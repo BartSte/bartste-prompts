@@ -7,7 +7,7 @@ from typing import Optional
 from ..utils import load_file_contents
 
 
-def command_to_prompt(command: str) -> Optional[str]:
+def command_to_prompt(command: str, files: list[str]) -> Optional[str]:
     """Convert a command name to its corresponding prompt content.
 
     Args:
@@ -19,7 +19,7 @@ def command_to_prompt(command: str) -> Optional[str]:
     prompt_file = os.path.join(
         os.path.dirname(__file__), "..", "static", f"{command}.md"
     )
-    return load_file_contents(prompt_file)
+    return load_file_contents(prompt_file, files)
 
 
 def create_parser() -> argparse.ArgumentParser:

@@ -1,43 +1,62 @@
+import logging
 import os
-from typing import List, Optional
 
 from aider.coders import Coder
 from aider.io import InputOutput
 from aider.models import Model
 
 from ._cli.parser import command_to_prompt
-from .utils import parse_aider_files
 
 
 class PromptCoder:
     """Encapsulates AI-powered code modifications without exposing framework
     details."""
 
-    def __init__(self, files: List[str]):
+    def __init__(self, files: list[str]):
         """Initialize with files to process.
 
         Args:
             files: List of file paths to analyze/modify
         """
-        self.coder = Coder.create(
+        self.files = files
+        self._coder = Coder.create(
+            main_model=self._get_model(),
             io=InputOutput(yes=True),
             fnames=files,
-            read_only_fnames=parse_aider_files(),
+            read_only_fnames=self._get_read_only_files(),
             auto_commits=False,
             dirty_commits=False,
-            stream=False,
-            main_model=self._get_model(),
-            auto_accept_architect=True,
             show_diffs=False,
         )
 
-    def _get_model(self) -> Optional[Model]:
+    @staticmethod
+    def _get_model() -> Model | None:
         """Get configured AI model if specified in environment."""
         if model_name := os.getenv("AIDER_MODEL"):
             return Model(model_name)
         return None
 
-    def execute(self, command: str) -> None:
+    @staticmethod
+    def _get_read_only_files() -> list[str]:
+        """Parse file paths from AIDER_READ environment variable.
+
+        Returns:
+            List of expanded file paths from AIDER_READ.
+        """
+        aider_read = os.getenv("AIDER_READ")
+        if not aider_read:
+            return []
+
+        if aider_read.startswith("[") and aider_read.endswith("]"):
+            files = [
+                f.strip().strip("'\"") for f in aider_read[1:-1].split(",")
+            ]
+        else:
+            files = [aider_read.strip()]
+
+        return [os.path.expandvars(f) for f in files if f.strip()]
+
+    def run_command(self, command: str) -> None:
         """Execute a command on the configured files.
 
         Args:
@@ -46,7 +65,8 @@ class PromptCoder:
         Raises:
             ValueError: If no prompt is found for the command
         """
-        if prompt := command_to_prompt(command):
-            self.coder.run(with_message=prompt)
+        if prompt := command_to_prompt(command, self.files):
+            logging.info(f"Running command: {command} with prompt: {prompt}")
+            self._coder.run(prompt)
         else:
             raise ValueError(f"No prompt found for command: {command}")

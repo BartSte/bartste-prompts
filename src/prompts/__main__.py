@@ -13,6 +13,10 @@ def main() -> None:
     Parses command line arguments, sets up logging, and executes the prompt
     coder.
     Handles any exceptions that occur during execution.
+
+    Raises:
+        Exception: Any unhandled exceptions during execution will be caught,
+            logged and result in exit code 1.
     """
     parser = create_parser()
     args = parser.parse_args()
@@ -25,10 +29,9 @@ def main() -> None:
 
     try:
         prompter = PromptCoder(args.files)
-        logging.info("%s", prompter.coder.run("/settings"))
-        prompter.execute(args.command)
+        prompter.run_command(args.command)
     except Exception as e:
-        print(f"Error: {str(e)}", file=sys.stderr)
+        logging.error("An error occurred: %s", e)
         sys.exit(1)
 
 
