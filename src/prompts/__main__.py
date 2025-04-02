@@ -4,7 +4,7 @@ import sys
 from typing import Optional
 
 from ._cli.parser import create_parser
-from .docstrings import DocstringGenerator
+from .prompt_maker import PromptMaker
 
 
 def main() -> None:
@@ -16,9 +16,14 @@ def main() -> None:
         parser.print_help()
         sys.exit(0)
         
-    if args.command == "docstrings":
-        generator = DocstringGenerator()
-        generator.generate_docstrings(args.files)
+    prompt_maker = PromptMaker()
+    prompt = prompt_maker.load_prompt(args.command)
+    if not prompt:
+        print(f"Error: No prompt found for command '{args.command}'")
+        sys.exit(1)
+
+    coder = prompt_maker.create_coder(args.files)
+    prompt_maker.process_files(coder, args.files, prompt)
 
 
 if __name__ == "__main__":

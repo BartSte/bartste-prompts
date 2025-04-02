@@ -8,8 +8,8 @@ from aider.models import Model
 from .utils import load_file_contents
 
 
-class AIClient:
-    """Client for interacting with AI models to generate code improvements.
+class PromptMaker:
+    """Handles creation and execution of AI prompts for code improvements.
 
     Attributes:
         io: InputOutput instance for handling user interaction.
@@ -17,7 +17,7 @@ class AIClient:
     """
 
     def __init__(self):
-        """Initialize the AI client."""
+        """Initialize the prompt maker."""
         self.io = InputOutput()
         self.conventions = self._load_conventions()
 
@@ -44,6 +44,22 @@ class AIClient:
             for file in files 
             if file.strip()
         )
+
+    def load_prompt(self, command: str) -> str:
+        """Load prompt text from static file for given command.
+
+        Args:
+            command: The subcommand name (e.g. 'docstrings').
+
+        Returns:
+            str: The loaded prompt text.
+        """
+        prompt_file = os.path.join(
+            os.path.dirname(__file__),
+            "static",
+            f"{command}.md"
+        )
+        return load_file_contents(prompt_file)
 
     def create_coder(self, files: List[str]) -> Coder:
         """Create an Aider coder instance for processing files.
