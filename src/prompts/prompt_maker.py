@@ -36,7 +36,9 @@ class PromptCoder(Coder):
             return []
 
         if aider_read.startswith("[") and aider_read.endswith("]"):
-            files = [f.strip().strip("'\"") for f in aider_read[1:-1].split(",")]
+            files = [
+                f.strip().strip("'\"") for f in aider_read[1:-1].split(",")
+            ]
         else:
             files = [aider_read.strip()]
 
@@ -52,12 +54,12 @@ class PromptCoder(Coder):
 
     def run(self, *, with_command: Optional[str] = None, **kwargs):
         """Run the coder with optional command-based prompt loading.
-        
+
         Args:
             with_command: If provided, loads and uses the prompt for this command.
             **kwargs: Additional arguments passed to parent's run method.
         """
         if with_command is not None:
             prompt = self.load_prompt(with_command)
-            kwargs['with_message'] = prompt
+            kwargs["with_message"] = prompt
         return super().run(**kwargs)
