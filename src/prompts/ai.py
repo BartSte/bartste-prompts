@@ -31,9 +31,18 @@ class AIClient:
         if not aider_read:
             return ""
 
-        files = aider_read.split(",")
+        # Handle both single path and list format [path1, path2]
+        if aider_read.startswith("[") and aider_read.endswith("]"):
+            # Remove brackets and split by commas
+            files = [f.strip().strip("'\"") for f in aider_read[1:-1].split(",")]
+        else:
+            # Single path
+            files = [aider_read.strip()]
+
         return "\n".join(
-            load_file_contents(file.strip()) for file in files if file.strip()
+            load_file_contents(os.path.expandvars(file)) 
+            for file in files 
+            if file.strip()
         )
 
     def create_coder(self, files: List[str]) -> Coder:
