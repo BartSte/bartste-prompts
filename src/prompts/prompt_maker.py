@@ -49,3 +49,15 @@ class PromptCoder(Coder):
             os.path.dirname(__file__), "static", f"{command}.md"
         )
         return load_file_contents(prompt_file)
+
+    def run(self, *, with_command: Optional[str] = None, **kwargs):
+        """Run the coder with optional command-based prompt loading.
+        
+        Args:
+            with_command: If provided, loads and uses the prompt for this command.
+            **kwargs: Additional arguments passed to parent's run method.
+        """
+        if with_command is not None:
+            prompt = self.load_prompt(with_command)
+            kwargs['with_message'] = prompt
+        return super().run(**kwargs)
