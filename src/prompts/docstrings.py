@@ -17,13 +17,22 @@ class DocstringGenerator:
         """Initializes the docstring generator.
 
         Args:
-            conventions_file: Optional path to a file containing custom docstring conventions.
+            conventions_file: Optional path to a file containing custom
+            docstring conventions.
         """
         self.conventions = self._load_conventions(conventions_file)
         self.io = InputOutput()
 
     def _load_conventions(self, path: Optional[str]) -> str:
-        """Load conventions from file if provided."""
+        """Load conventions from file if provided.
+
+        Args:
+            path: Optional path to the conventions file.
+
+        Returns:
+            str: The loaded conventions text, or empty string if no file or
+            error occurs.
+        """
         if not path:
             return ""
 
@@ -40,13 +49,15 @@ class DocstringGenerator:
             files: List of file paths to process.
 
         Note:
-            Uses the aider library to interact with AI models for docstring generation.
+            Uses the aider library to interact with AI models for docstring
+            generation.
         """
         if not files:
             self.io.tool_output("No files specified - nothing to do")
             return
 
-        # Create aider coder instance respecting AIDER_MODEL environment variable
+        # Create aider coder instance respecting AIDER_MODEL environment
+        # variable
         import os
 
         from aider.models import Model
@@ -62,7 +73,6 @@ class DocstringGenerator:
             stream=False,
             main_model=main_model,
             auto_accept_architect=True,
-            quiet=True,
         )
 
         for file in files:
@@ -74,6 +84,10 @@ class DocstringGenerator:
         Args:
             coder: Aider Coder instance for AI interaction.
             file_path: Path to the file being processed.
+
+        Note:
+            Uses the coder instance to send the docstring generation prompt to
+            the AI model.
         """
         # Determine language based on file extension
         lang = self._get_language(file_path)
@@ -91,7 +105,12 @@ class DocstringGenerator:
             file_path: Path to the source file.
 
         Returns:
-            str: The detected programming language name or 'unknown' if not recognized.
+            str: The detected programming language name or 'unknown' if not
+            recognized.
+
+        Note:
+            Currently supports common languages like Python, JavaScript,
+            TypeScript, Java, Go, Rust and Ruby.
         """
         ext = file_path.split(".")[-1].lower()
         return {
@@ -114,13 +133,14 @@ class DocstringGenerator:
             str: A formatted prompt string for the AI model.
         """
         prompt = f"""
-Please add appropriate docstrings to all {language} functions, classes and methods 
-that are missing them in the specified files. Follow standard conventions for {language} code.
+Please add appropriate docstrings to all {language} functions, classes and
+methods that are missing them in the specified files. Follow standard
+conventions for {language} code.
 
 Key requirements:
 - Only add docstrings where they are missing
 - Maintain existing code style
-- Keep docstrings concise but informative  
+- Keep docstrings concise but informative
 - Include type information where appropriate
 - Use the most common docstring style for {language}
 
