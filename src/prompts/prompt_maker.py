@@ -9,18 +9,17 @@ from ._cli.parser import command_to_prompt
 from .utils import parse_aider_files
 
 
-class PromptCoder(Coder):
+class PromptCoder:
     """Custom Coder class for prompt-based operations."""
 
-    @classmethod
-    def create(cls, files: List[str]) -> "PromptCoder":
-        """Create a PromptCoder instance configured for the given files."""
+    coder: Coder
+
+    def __init__(self, files: List[str]):
         model_name = os.getenv("AIDER_MODEL")
         main_model = Model(model_name) if model_name else None
-        io = InputOutput()
 
-        return super().create(
-            io=io,
+        self.coder = Coder.create(
+            io=InputOutput(),
             fnames=files,
             read_only_fnames=parse_aider_files(),
             auto_commits=False,
@@ -31,14 +30,8 @@ class PromptCoder(Coder):
         )
 
     def run(self, *, with_command: Optional[str] = None, **kwargs):
-        """Run the coder with optional command-based prompt loading.
-
-        Args:
-            with_command: If provided, loads and uses the prompt for this command.
-            **kwargs: Additional arguments passed to parent's run method.
-        """
         if with_command is not None:
             prompt = command_to_prompt(with_command)
             if prompt:
                 kwargs["with_message"] = prompt
-        return super().run(**kwargs)
+        return self.coder.run(**kwargs)
