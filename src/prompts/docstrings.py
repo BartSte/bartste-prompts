@@ -7,14 +7,8 @@ from .utils import get_language_from_path, load_file_contents
 class DocstringGenerator:
     """Generates docstrings for source code files using AI assistance."""
 
-    def __init__(self, conventions_file: Optional[str] = None):
-        """Initializes the docstring generator.
-
-        Args:
-            conventions_file: Optional path to a file containing custom
-                docstring conventions.
-        """
-        self.conventions = load_file_contents(conventions_file)
+    def __init__(self):
+        """Initializes the docstring generator."""
         self.ai_client = AIClient()
 
     def generate_docstrings(self, files: List[str]) -> None:
@@ -52,5 +46,5 @@ Key requirements:
 - Include type information where appropriate
 - Use the most common docstring style for {language}
 
-{self.conventions}
+{self.ai_client.conventions}
 """.strip()
