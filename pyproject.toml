@@ -8,6 +8,9 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
+dependencies = [
+    "aider-chat>=0.8.0",
+]
 
 [build-system]
 requires = ["setuptools>=42"]
