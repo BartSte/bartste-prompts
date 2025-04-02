@@ -23,8 +23,8 @@ def main() -> None:
     )
 
     try:
-        coder: PromptCoder = PromptCoder(args.files)
-        coder.run(with_command=args.command)
+        processor = PromptCoder(args.files)
+        processor.execute(args.command)
     except Exception as e:
         print(f"Error: {str(e)}", file=sys.stderr)
         sys.exit(1)
