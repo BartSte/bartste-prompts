@@ -1,11 +1,10 @@
 """Main entry point for the bartste-prompts package."""
 
-import argparse
 import sys
 from typing import Optional
 
-from prompts._cli.parser import create_parser
-from prompts.docstrings import DocstringGenerator
+from ._cli.parser import create_parser
+from .docstrings import DocstringGenerator
 
 
 def main() -> None:
