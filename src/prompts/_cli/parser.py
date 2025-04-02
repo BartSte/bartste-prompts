@@ -14,6 +14,13 @@ def create_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     
+    parser.add_argument(
+        "--loglevel",
+        default="WARNING",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        help="Set the logging level",
+    )
+    
     subparsers = parser.add_subparsers(dest="command")
     
     # Docstrings subcommand
