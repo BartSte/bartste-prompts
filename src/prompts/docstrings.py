@@ -45,6 +45,7 @@ class DocstringGenerator:
             dirty_commits=False,
             stream=False,
             main_model=main_model,
+            auto_accept_architect=True,
         )
 
         for file in files:
