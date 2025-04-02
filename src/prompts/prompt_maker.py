@@ -34,14 +34,16 @@ class PromptMaker:
         # Handle both single path and list format [path1, path2]
         if aider_read.startswith("[") and aider_read.endswith("]"):
             # Remove brackets and split by commas
-            files = [f.strip().strip("'\"") for f in aider_read[1:-1].split(",")]
+            files = [
+                f.strip().strip("'\"") for f in aider_read[1:-1].split(",")
+            ]
         else:
             # Single path
             files = [aider_read.strip()]
 
         return "\n".join(
-            load_file_contents(os.path.expandvars(file)) 
-            for file in files 
+            load_file_contents(os.path.expandvars(file))
+            for file in files
             if file.strip()
         )
 
@@ -55,9 +57,7 @@ class PromptMaker:
             str: The loaded prompt text.
         """
         prompt_file = os.path.join(
-            os.path.dirname(__file__),
-            "static",
-            f"{command}.md"
+            os.path.dirname(__file__), "static", f"{command}.md"
         )
         return load_file_contents(prompt_file)
 
@@ -77,7 +77,10 @@ class PromptMaker:
         conventions_file = None
         if self.conventions:
             import tempfile
-            with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
+
+            with tempfile.NamedTemporaryFile(
+                mode="w", suffix=".md", delete=False
+            ) as f:
                 f.write(self.conventions)
                 conventions_file = f.name
 
@@ -89,7 +92,9 @@ class PromptMaker:
             stream=False,
             main_model=main_model,
             auto_accept_architect=True,
-            abs_read_only_fnames=[conventions_file] if conventions_file else None
+            abs_read_only_fnames=[conventions_file]
+            if conventions_file
+            else None,
         )
 
     def process_files(
