@@ -92,7 +92,7 @@ class PromptMaker:
             stream=False,
             main_model=main_model,
             auto_accept_architect=True,
-            abs_read_only_fnames=[conventions_file]
+            read_only_fnames=[conventions_file]
             if conventions_file
             else None,
         )
