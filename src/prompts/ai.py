@@ -1,5 +1,5 @@
 import os
-from typing import List, Optional
+from typing import List
 
 from aider.coders import Coder
 from aider.io import InputOutput
@@ -33,9 +33,7 @@ class AIClient:
 
         files = aider_read.split(",")
         return "\n".join(
-            load_file_contents(file.strip())
-            for file in files
-            if file.strip()
+            load_file_contents(file.strip()) for file in files if file.strip()
         )
 
     def create_coder(self, files: List[str]) -> Coder:
@@ -60,7 +58,9 @@ class AIClient:
             auto_accept_architect=True,
         )
 
-    def process_files(self, coder: Coder, files: List[str], prompt: str) -> None:
+    def process_files(
+        self, coder: Coder, files: List[str], prompt: str
+    ) -> None:
         """Process files with the given prompt.
 
         Args:
