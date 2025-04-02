@@ -4,7 +4,7 @@ import logging
 import sys
 
 from ._cli.parser import create_parser
-from .prompt_maker import execute_command
+from .prompt_maker import PromptCoder
 
 
 def main() -> None:
@@ -19,7 +19,9 @@ def main() -> None:
     )
 
     try:
-        execute_command(args.command, args.files)
+        coder = PromptCoder.create_for_files(args.files)
+        prompt = PromptCoder.load_prompt(args.command)
+        coder.run(with_message=prompt)
     except Exception as e:
         print(f"Error: {str(e)}", file=sys.stderr)
         sys.exit(1)
