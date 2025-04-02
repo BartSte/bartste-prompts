@@ -1,7 +1,6 @@
-from typing import List, Optional
+from typing import List
 
 from .ai import AIClient
-from .utils import get_language_from_path, load_file_contents
 
 
 class DocstringGenerator:
@@ -22,29 +21,25 @@ class DocstringGenerator:
             return
 
         coder = self.ai_client.create_coder(files)
-        self.ai_client.process_files(coder, files, self._get_prompt(files[0]))
+        self.ai_client.process_files(coder, files, self._get_prompt())
 
-    def _get_prompt(self, file_path: str) -> str:
+    def _get_prompt(self) -> str:
         """Generates the AI prompt for docstring generation.
-
-        Args:
-            file_path: Path to example file to determine language.
 
         Returns:
             str: A formatted prompt string for the AI model.
         """
-        language = get_language_from_path(file_path)
         return f"""
-Please add appropriate docstrings to all {language} functions, classes and
+Please add appropriate docstrings to all functions, classes and
 methods that are missing them in the specified files. Follow standard
-conventions for {language} code.
+conventions for each language.
 
 Key requirements:
 - Only add docstrings where they are missing
 - Maintain existing code style
 - Keep docstrings concise but informative
 - Include type information where appropriate
-- Use the most common docstring style for {language}
+- Use the most common docstring style for each language
 
 {self.ai_client.conventions}
 """.strip()
