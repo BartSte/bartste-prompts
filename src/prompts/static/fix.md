@@ -1,5 +1,3 @@
-You MUST only change the following files: {files}
-
 Please analyze and fix all bugs in these files.
 
 This includes:

@@ -1,5 +1,3 @@
-You MUST only change the following files: {files}
-
 Please refactor to follow modern best practices and improve code quality.
 
 Key requirements:
