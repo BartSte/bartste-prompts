@@ -1,4 +1,4 @@
-Please refactor the specified files to follow modern best practices and improve code quality.
+Please refactor ONLY these files to follow modern best practices and improve code quality: {files}
 
 Key requirements:
 - Improve code structure and organization

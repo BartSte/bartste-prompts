@@ -1,4 +1,6 @@
-Please analyze and fix all bugs in the specified files. This includes:
+Please analyze and fix all bugs in ONLY these files: {files}
+
+This includes:
 
 1. Runtime errors
 2. Logical errors

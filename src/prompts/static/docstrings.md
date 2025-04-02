@@ -1,5 +1,7 @@
 Please add appropriate docstrings to all functions, classes and
-methods. Follow standard conventions for each language.
+methods in ONLY these files: {files}
+
+Follow standard conventions for each language.
 
 Key requirements:
 

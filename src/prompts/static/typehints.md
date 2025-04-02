@@ -1,4 +1,4 @@
-Please add appropriate type hints to all functions, methods and variables in the specified files. 
+Please add appropriate type hints to all functions, methods and variables in ONLY these files: {files}
 Follow standard type hinting conventions for each language.
 
 Key requirements:
