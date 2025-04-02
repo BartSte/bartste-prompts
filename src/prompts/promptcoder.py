@@ -19,12 +19,8 @@ class PromptCoder:
         Args:
             files: List of file paths to analyze/modify
         """
-        self._coder = self._create_coder(files)
-
-    def _create_coder(self, files: List[str]) -> Coder:
-        """Create and configure the underlying Coder instance."""
-        return Coder.create(
-            io=InputOutput(),
+        self.coder = Coder.create(
+            io=InputOutput(yes=True),
             fnames=files,
             read_only_fnames=parse_aider_files(),
             auto_commits=False,
@@ -51,6 +47,6 @@ class PromptCoder:
             ValueError: If no prompt is found for the command
         """
         if prompt := command_to_prompt(command):
-            self._coder.run(with_message=prompt)
+            self.coder.run(with_message=prompt)
         else:
             raise ValueError(f"No prompt found for command: {command}")

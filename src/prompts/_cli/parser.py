@@ -9,10 +9,10 @@ from ..utils import load_file_contents
 
 def command_to_prompt(command: str) -> Optional[str]:
     """Convert a command name to its corresponding prompt content.
-    
+
     Args:
         command: The command name to look up
-        
+
     Returns:
         The loaded prompt content or None if not found
     """
@@ -32,58 +32,44 @@ def create_parser() -> argparse.ArgumentParser:
         description="bartste-prompts CLI",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    
+
     parser.add_argument(
         "--loglevel",
         default="WARNING",
         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
         help="Set the logging level",
     )
-    
+
     subparsers = parser.add_subparsers(dest="command")
-    
+
     # Docstrings subcommand
     docstrings_parser = subparsers.add_parser(
-        "docstrings",
-        help="Add docstrings to files"
+        "docstrings", help="Add docstrings to files"
     )
     docstrings_parser.add_argument(
-        "files",
-        nargs="+",
-        help="Files to process (required)"
+        "files", nargs="+", help="Files to process (required)"
     )
 
     # Typehints subcommand
     typehints_parser = subparsers.add_parser(
-        "typehints",
-        help="Add type hints to files"
+        "typehints", help="Add type hints to files"
     )
     typehints_parser.add_argument(
-        "files",
-        nargs="+",
-        help="Files to process (required)"
+        "files", nargs="+", help="Files to process (required)"
     )
 
     # Refactor subcommand
     refactor_parser = subparsers.add_parser(
-        "refactor",
-        help="Refactor code based on best practices"
+        "refactor", help="Refactor code based on best practices"
     )
     refactor_parser.add_argument(
-        "files",
-        nargs="+",
-        help="Files to process (required)"
+        "files", nargs="+", help="Files to process (required)"
     )
 
     # Fix subcommand
-    fix_parser = subparsers.add_parser(
-        "fix",
-        help="Fix bugs in the code"
-    )
+    fix_parser = subparsers.add_parser("fix", help="Fix bugs in the code")
     fix_parser.add_argument(
-        "files",
-        nargs="+",
-        help="Files to process (required)"
+        "files", nargs="+", help="Files to process (required)"
     )
-    
+
     return parser

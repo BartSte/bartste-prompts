@@ -24,8 +24,9 @@ def main() -> None:
     )
 
     try:
-        processor = PromptCoder(args.files)
-        processor.execute(args.command)
+        prompter = PromptCoder(args.files)
+        logging.info("%s", prompter.coder.run("/settings"))
+        prompter.execute(args.command)
     except Exception as e:
         print(f"Error: {str(e)}", file=sys.stderr)
         sys.exit(1)
