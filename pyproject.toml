@@ -12,8 +12,17 @@ dependencies = [
     "aider-chat>=0.8.0",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "pre-commit>=3.0.0",
+]
+
 [project.scripts]
 prompts = "bartste_prompts.__main__:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["bartste_prompts"]
 
 [build-system]
 requires = ["setuptools>=42"]
