@@ -1,6 +1,25 @@
 """Command line argument parser for bartste-prompts."""
 
 import argparse
+import os
+from typing import Optional
+
+from ..utils import load_file_contents
+
+
+def command_to_prompt(command: str) -> Optional[str]:
+    """Convert a command name to its corresponding prompt content.
+    
+    Args:
+        command: The command name to look up
+        
+    Returns:
+        The loaded prompt content or None if not found
+    """
+    prompt_file = os.path.join(
+        os.path.dirname(__file__), "..", "static", f"{command}.md"
+    )
+    return load_file_contents(prompt_file)
 
 
 def create_parser() -> argparse.ArgumentParser:

@@ -5,7 +5,8 @@ from aider.coders import Coder
 from aider.io import InputOutput
 from aider.models import Model
 
-from .utils import load_file_contents
+from .utils import load_file_contents, parse_aider_files
+from ._cli.parser import command_to_prompt
 
 
 class PromptCoder(Coder):
@@ -20,7 +21,7 @@ class PromptCoder(Coder):
         super().__init__(
             io=io,
             fnames=files,
-            read_only_fnames=self._get_convention_files(),
+            read_only_fnames=parse_aider_files(),
             auto_commits=False,
             dirty_commits=False,
             stream=False,
@@ -60,6 +61,6 @@ class PromptCoder(Coder):
             **kwargs: Additional arguments passed to parent's run method.
         """
         if with_command is not None:
-            prompt = self.load_prompt(with_command)
+            prompt = command_to_prompt(with_command)
             kwargs["with_message"] = prompt
         return super().run(**kwargs)
