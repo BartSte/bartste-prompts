@@ -73,6 +73,14 @@ class PromptMaker:
         model_name = os.getenv("AIDER_MODEL")
         main_model = Model(model_name) if model_name else None
 
+        # Create a temporary file with conventions to pass as read-only context
+        conventions_file = None
+        if self.conventions:
+            import tempfile
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
+                f.write(self.conventions)
+                conventions_file = f.name
+
         return Coder.create(
             io=self.io,
             fnames=files,
@@ -81,7 +89,7 @@ class PromptMaker:
             stream=False,
             main_model=main_model,
             auto_accept_architect=True,
-            additional_context=self.conventions
+            abs_read_only_fnames=[conventions_file] if conventions_file else None
         )
 
     def process_files(
