@@ -13,4 +13,24 @@ def create_parser() -> argparse.ArgumentParser:
         description="bartste-prompts CLI",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
+    
+    subparsers = parser.add_subparsers(dest="command")
+    
+    # Docstrings subcommand
+    docstrings_parser = subparsers.add_parser(
+        "docstrings",
+        help="Add docstrings to files"
+    )
+    docstrings_parser.add_argument(
+        "files",
+        nargs="*",
+        help="Files to add docstrings to (default: all unstaged files)"
+    )
+    docstrings_parser.add_argument(
+        "--style",
+        choices=["google", "numpy", "rest"],
+        default="google",
+        help="Docstring style to use"
+    )
+    
     return parser

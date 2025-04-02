@@ -2,8 +2,10 @@
 
 import argparse
 import sys
+from typing import Optional
 
 from prompts._cli.parser import create_parser
+from prompts.docstrings import DocstringGenerator
 
 
 def main() -> None:
@@ -11,10 +13,13 @@ def main() -> None:
     parser = create_parser()
     args = parser.parse_args()
 
-    # Currently just prints help if no commands given
-    if len(sys.argv) == 1:
+    if not args.command:
         parser.print_help()
         sys.exit(0)
+        
+    if args.command == "docstrings":
+        generator = DocstringGenerator(style=args.style)
+        generator.generate_docstrings(args.files)
 
 
 if __name__ == "__main__":
