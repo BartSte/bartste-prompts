@@ -4,13 +4,14 @@ import logging
 import sys
 
 from ._cli.parser import create_parser
-from .prompt_maker import PromptCoder
+from .promptcoder import PromptCoder
 
 
 def main() -> None:
     """Run the main CLI entry point.
-    
-    Parses command line arguments, sets up logging, and executes the prompt coder.
+
+    Parses command line arguments, sets up logging, and executes the prompt
+    coder.
     Handles any exceptions that occur during execution.
     """
     parser = create_parser()
