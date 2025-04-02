@@ -1,5 +1,5 @@
 import os
-from typing import List, Optional
+from typing import List
 
 from aider.coders import Coder
 from aider.io import InputOutput
@@ -48,4 +48,3 @@ def execute_command(command: str, files: List[str]) -> None:
         auto_accept_architect=True,
     )
     coder.run(with_message=prompt)
-
