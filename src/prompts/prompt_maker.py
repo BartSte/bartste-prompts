@@ -18,7 +18,7 @@ class PromptMaker:
 
     def __init__(self):
         """Initialize the prompt maker."""
-        self.io = InputOutput()
+        self.io = InputOutput(pretty=False, yes=True)
         self.conventions = self._load_conventions()
 
     def _load_conventions(self) -> str:

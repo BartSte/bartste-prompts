@@ -15,14 +15,22 @@ def main() -> None:
         parser.print_help()
         sys.exit(0)
 
-    prompt_maker = PromptMaker()
-    prompt = prompt_maker.load_prompt(args.command)
-    if not prompt:
-        print(f"Error: No prompt found for command '{args.command}'")
-        sys.exit(1)
+    try:
+        prompt_maker = PromptMaker()
+        prompt = prompt_maker.load_prompt(args.command)
+        if not prompt:
+            print(f"Error: No prompt found for command '{args.command}'", file=sys.stderr)
+            sys.exit(1)
 
-    coder = prompt_maker.create_coder(args.files)
-    prompt_maker.process_files(coder, args.files, prompt)
+        if not args.files:
+            print("Error: No files specified", file=sys.stderr)
+            sys.exit(1)
+
+        coder = prompt_maker.create_coder(args.files)
+        prompt_maker.process_files(coder, args.files, prompt)
+    except Exception as e:
+        print(f"Error: {str(e)}", file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

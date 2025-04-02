@@ -23,8 +23,8 @@ def create_parser() -> argparse.ArgumentParser:
     )
     docstrings_parser.add_argument(
         "files",
-        nargs="*",
-        help="Files to add docstrings to (default: all unstaged files)"
+        nargs="+",
+        help="Files to process (required)"
     )
     
     return parser
