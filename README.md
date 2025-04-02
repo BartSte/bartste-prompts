@@ -11,11 +11,13 @@ pip install bartste-prompts
 ## Usage
 
 ### As a Python module
+
 ```python
-from bartste_prompts import prompts
+from prompts import *
 ```
 
 ### Command Line Interface
+
 ```bash
 prompts [options]
 ```
