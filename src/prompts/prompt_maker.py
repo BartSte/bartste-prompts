@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import List, Optional
 
 from aider.coders import Coder
 from aider.io import InputOutput
@@ -9,74 +9,41 @@ from .utils import load_file_contents
 
 
 class PromptMaker:
-    """Handles creation and execution of AI prompts for code improvements.
-
-    Attributes:
-        io: InputOutput instance for handling user interaction.
-        conventions: String containing coding conventions loaded from files.
-    """
+    """Handles creation and execution of AI prompts for code improvements."""
 
     def __init__(self):
-        """Initialize the prompt maker."""
         self.io = InputOutput()
-        self.conventions = self._load_conventions()
+        self.convention_files = self._get_convention_files()
 
-    def _load_conventions(self) -> str:
-        """Load conventions from files specified in AIDER_READ environment
-        variable.
-
-        Returns:
-            str: Combined contents of all convention files.
-        """
+    def _get_convention_files(self) -> List[str]:
+        """Get list of convention file paths from AIDER_READ environment variable."""
         aider_read = os.getenv("AIDER_READ")
         if not aider_read:
-            return ""
+            return []
 
-        # Handle both single path and list format [path1, path2]
         if aider_read.startswith("[") and aider_read.endswith("]"):
-            # Remove brackets and split by commas
-            files = [
-                f.strip().strip("'\"") for f in aider_read[1:-1].split(",")
-            ]
+            files = [f.strip().strip("'\"") for f in aider_read[1:-1].split(",")]
         else:
-            # Single path
             files = [aider_read.strip()]
 
-        return "\n".join(
-            load_file_contents(os.path.expandvars(file))
-            for file in files
-            if file.strip()
-        )
+        return [os.path.expandvars(f) for f in files if f.strip()]
 
     def load_prompt(self, command: str) -> str:
-        """Load prompt text from static file for given command.
-
-        Args:
-            command: The subcommand name (e.g. 'docstrings').
-
-        Returns:
-            str: The loaded prompt text.
-        """
+        """Load prompt text from static file for given command."""
         prompt_file = os.path.join(
             os.path.dirname(__file__), "static", f"{command}.md"
         )
         return load_file_contents(prompt_file)
 
     def create_coder(self, files: List[str]) -> Coder:
-        """Create an Aider coder instance for processing files.
-
-        Args:
-            files: List of file paths to process.
-
-        Returns:
-            Coder: Configured Aider coder instance.
-        """
+        """Create an Aider coder instance with convention files as read-only."""
         model_name = os.getenv("AIDER_MODEL")
         main_model = Model(model_name) if model_name else None
 
         return Coder.create(
             io=self.io,
             fnames=files,
+            read_only_fnames=self.convention_files,
             auto_commits=False,
             dirty_commits=False,
             stream=False,
@@ -84,15 +51,6 @@ class PromptMaker:
             auto_accept_architect=True,
         )
 
-    def process_files(
-        self, coder: Coder, files: List[str], prompt: str
-    ) -> None:
-        """Process files with the given prompt.
-
-        Args:
-            coder: Aider Coder instance for AI interaction.
-            files: List of file paths to process.
-            prompt: The prompt to use for processing.
-        """
-        for file in files:
-            coder.run(with_message=prompt)
+    def process_files(self, coder: Coder, files: List[str], prompt: str) -> None:
+        """Process files with the given prompt."""
+        coder.run(with_message=prompt)
