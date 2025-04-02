@@ -62,6 +62,7 @@ class DocstringGenerator:
             stream=False,
             main_model=main_model,
             auto_accept_architect=True,
+            quiet=True,
         )
 
         for file in files:
