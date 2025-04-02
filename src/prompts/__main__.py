@@ -18,7 +18,7 @@ def main() -> None:
         sys.exit(0)
         
     if args.command == "docstrings":
-        generator = DocstringGenerator(style=args.style)
+        generator = DocstringGenerator(conventions_file=args.conventions)
         generator.generate_docstrings(args.files)
 
 

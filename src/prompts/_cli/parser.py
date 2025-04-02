@@ -27,10 +27,9 @@ def create_parser() -> argparse.ArgumentParser:
         help="Files to add docstrings to (default: all unstaged files)"
     )
     docstrings_parser.add_argument(
-        "--style",
-        choices=["google", "numpy", "rest"],
-        default="google",
-        help="Docstring style to use"
+        "--conventions",
+        type=str,
+        help="Path to file containing coding conventions for docstrings"
     )
     
     return parser

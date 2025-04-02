@@ -1,15 +1,27 @@
 """Docstring generation functionality for bartste-prompts."""
 
-from typing import List
+from typing import List, Optional
 import subprocess
+import pathlib
 from aider_chat import AiderChat
 
 class DocstringGenerator:
     """Handles docstring generation for files."""
     
-    def __init__(self, style: str = "google"):
-        self.style = style
+    def __init__(self, conventions_file: Optional[str] = None):
+        self.conventions = self._load_conventions(conventions_file)
         self.aider = AiderChat()
+        
+    def _load_conventions(self, path: Optional[str]) -> str:
+        """Load conventions from file if provided."""
+        if not path:
+            return ""
+            
+        try:
+            return pathlib.Path(path).read_text()
+        except Exception as e:
+            print(f"Warning: Could not load conventions file: {e}")
+            return ""
         
     def get_unstaged_files(self) -> List[str]:
         """Get list of unstaged files from git."""
@@ -54,17 +66,17 @@ class DocstringGenerator:
         }.get(ext, "unknown")
         
     def _get_prompt(self, language: str) -> str:
-        """Get the appropriate prompt based on language and style."""
-        base_prompt = f"Add {self.style} style docstrings to all {language} "
-        base_prompt += "functions, classes and methods that are missing them. "
-        base_prompt += "Follow all standard conventions for the language."
-        
-        if language == "python":
-            if self.style == "google":
-                base_prompt += " Use Google style docstrings with type hints."
-            elif self.style == "numpy":
-                base_prompt += " Use NumPy style docstrings."
-            elif self.style == "rest":
-                base_prompt += " Use reStructuredText style docstrings."
-        
-        return base_prompt
+        """Get the appropriate prompt based on language and conventions."""
+        prompt = f"""
+Add appropriate docstrings to all {language} functions, classes and methods that are missing them.
+Follow standard conventions for {language} code.
+
+Key requirements:
+- Only add docstrings where they are missing
+- Maintain existing code style
+- Keep docstrings concise but informative
+- Include type information where appropriate
+
+{self.conventions}
+"""
+        return prompt.strip()
