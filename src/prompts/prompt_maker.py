@@ -39,5 +39,6 @@ class PromptCoder(Coder):
         """
         if with_command is not None:
             prompt = command_to_prompt(with_command)
-            kwargs["with_message"] = prompt
+            if prompt:
+                kwargs["with_message"] = prompt
         return super().run(**kwargs)
