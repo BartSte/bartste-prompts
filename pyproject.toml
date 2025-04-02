@@ -1,0 +1,48 @@
+[project]
+name = "bartste-prompts"
+version = "0.1.0"
+description = "A collection of prompts"
+authors = [
+    {name = "BartSte" },
+]
+readme = "README.md"
+requires-python = "<3.13"
+license = {text = "MIT"}
+dependencies = [
+    "pygeneral"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit>=3.0.0",
+    "pytest>=7.0.0",
+    "ipdb",
+    "ipython"
+]
+
+[project.scripts]
+prompts = "prompts.__main__:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["prompts"]
+package-data = {"prompts" = ["_prompts/**/*.md"]}
+
+[tool.ruff]
+line-length = 79
+
+[tool.black]
+line-length = 79
+
+[tool.isort]
+line_length = 79
+
+[tool.flake8]
+max-line-length = 79
+
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[tool.pyright]
+reportUnusedCallResult = false
