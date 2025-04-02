@@ -26,5 +26,16 @@ def create_parser() -> argparse.ArgumentParser:
         nargs="+",
         help="Files to process (required)"
     )
+
+    # Typehints subcommand
+    typehints_parser = subparsers.add_parser(
+        "typehints",
+        help="Add type hints to files"
+    )
+    typehints_parser.add_argument(
+        "files",
+        nargs="+",
+        help="Files to process (required)"
+    )
     
     return parser
