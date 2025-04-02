@@ -9,4 +9,3 @@ Key requirements:
 - Include type information where appropriate
 - Use the most common docstring style for each language
 
-{conventions}

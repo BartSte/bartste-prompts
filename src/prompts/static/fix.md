@@ -15,4 +15,3 @@ Key requirements:
 - Follow defensive programming principles
 - Keep the code style consistent
 
-{conventions}

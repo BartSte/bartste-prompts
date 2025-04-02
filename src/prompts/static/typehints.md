@@ -8,4 +8,3 @@ Key requirements:
 - Include return type annotations
 - Be consistent with the existing codebase's typing style
 
-{conventions}

@@ -81,6 +81,7 @@ class PromptMaker:
             stream=False,
             main_model=main_model,
             auto_accept_architect=True,
+            additional_context=self.conventions
         )
 
     def process_files(
