@@ -1,7 +1,7 @@
-Please add appropriate docstrings to all functions, classes and
-methods in ONLY these files: {files}
+You MUST only change the following files: {files}
 
-Follow standard conventions for each language.
+Please add appropriate docstrings to all functions, classes and
+methods. Follow standard conventions for each language.
 
 Key requirements:
 
