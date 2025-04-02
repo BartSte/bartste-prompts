@@ -1,5 +1,3 @@
-"""Docstring generation functionality for bartste-prompts."""
-
 import pathlib
 from typing import List, Optional
 
@@ -8,9 +6,19 @@ from aider.io import InputOutput
 
 
 class DocstringGenerator:
-    """Handles docstring generation for files using aider's API."""
+    """Generates docstrings for source code files using AI assistance.
+
+    Attributes:
+        conventions: String containing any custom docstring conventions.
+        io: InputOutput instance for handling user interaction.
+    """
 
     def __init__(self, conventions_file: Optional[str] = None):
+        """Initializes the docstring generator.
+
+        Args:
+            conventions_file: Optional path to a file containing custom docstring conventions.
+        """
         self.conventions = self._load_conventions(conventions_file)
         self.io = InputOutput()
 
@@ -26,14 +34,22 @@ class DocstringGenerator:
             return ""
 
     def generate_docstrings(self, files: List[str]) -> None:
-        """Generate docstrings for given files using aider."""
+        """Generates docstrings for multiple files using AI assistance.
+
+        Args:
+            files: List of file paths to process.
+
+        Note:
+            Uses the aider library to interact with AI models for docstring generation.
+        """
         if not files:
             self.io.tool_output("No files specified - nothing to do")
             return
 
         # Create aider coder instance respecting AIDER_MODEL environment variable
-        from aider.models import Model
         import os
+
+        from aider.models import Model
 
         model_name = os.getenv("AIDER_MODEL")
         main_model = Model(model_name) if model_name else None
@@ -52,7 +68,12 @@ class DocstringGenerator:
             self._process_file(coder, file)
 
     def _process_file(self, coder: Coder, file_path: str) -> None:
-        """Process a single file to add docstrings using aider."""
+        """Processes a single file to add missing docstrings.
+
+        Args:
+            coder: Aider Coder instance for AI interaction.
+            file_path: Path to the file being processed.
+        """
         # Determine language based on file extension
         lang = self._get_language(file_path)
 
@@ -63,7 +84,14 @@ class DocstringGenerator:
         coder.run(with_message=prompt)
 
     def _get_language(self, file_path: str) -> str:
-        """Get programming language from file extension."""
+        """Determines programming language from file extension.
+
+        Args:
+            file_path: Path to the source file.
+
+        Returns:
+            str: The detected programming language name or 'unknown' if not recognized.
+        """
         ext = file_path.split(".")[-1].lower()
         return {
             "py": "python",
@@ -76,7 +104,14 @@ class DocstringGenerator:
         }.get(ext, "unknown")
 
     def _get_prompt(self, language: str) -> str:
-        """Get the appropriate prompt based on language and conventions."""
+        """Generates the AI prompt for docstring generation.
+
+        Args:
+            language: The programming language being processed.
+
+        Returns:
+            str: A formatted prompt string for the AI model.
+        """
         prompt = f"""
 Please add appropriate docstrings to all {language} functions, classes and methods 
 that are missing them in the specified files. Follow standard conventions for {language} code.
