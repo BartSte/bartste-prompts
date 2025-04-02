@@ -12,13 +12,14 @@ from .utils import parse_aider_files
 class PromptCoder(Coder):
     """Custom Coder class for prompt-based operations."""
 
-    def __init__(self, files: List[str]):
-        """Initialize PromptCoder with the given files."""
+    @classmethod
+    def create(cls, files: List[str]) -> "PromptCoder":
+        """Create a PromptCoder instance configured for the given files."""
         model_name = os.getenv("AIDER_MODEL")
         main_model = Model(model_name) if model_name else None
         io = InputOutput()
 
-        super().__init__(
+        return super().create(
             io=io,
             fnames=files,
             read_only_fnames=parse_aider_files(),

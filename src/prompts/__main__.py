@@ -19,7 +19,7 @@ def main() -> None:
     )
 
     try:
-        coder = PromptCoder(args.files)
+        coder = PromptCoder.create(args.files)
         coder.run(with_command=args.command)
     except Exception as e:
         print(f"Error: {str(e)}", file=sys.stderr)
