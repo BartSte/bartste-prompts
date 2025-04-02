@@ -51,6 +51,3 @@ class PromptMaker:
             auto_accept_architect=True,
         )
 
-    def process_files(self, coder: Coder, files: List[str], prompt: str) -> None:
-        """Process files with the given prompt."""
-        coder.run(with_message=prompt)
