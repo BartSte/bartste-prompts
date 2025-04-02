@@ -32,7 +32,6 @@ class PromptCoder:
             stream=False,
             main_model=self._get_model(),
             auto_accept_architect=True,
-            pretty=True,
             show_diffs=False,
         )
 
