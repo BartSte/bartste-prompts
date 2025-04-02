@@ -2,24 +2,34 @@
 
 import argparse
 import os
-from typing import Optional
 
 from ..utils import load_file_contents
 
 
-def command_to_prompt(command: str, files: list[str]) -> Optional[str]:
+def command_to_prompt(command: str, files: list[str]) -> str | None:
     """Convert a command name to its corresponding prompt content.
 
     Args:
         command: The command name to look up
+        files: List of file paths that should be modified
 
     Returns:
-        The loaded prompt content or None if not found
+        The loaded prompt content with file restrictions prepended, or None if
+        not found
     """
+    if not files:
+        return None
+
     prompt_file = os.path.join(
         os.path.dirname(__file__), "..", "static", f"{command}.md"
     )
-    return load_file_contents(prompt_file, files)
+    if prompt_content := load_file_contents(prompt_file, files):
+        file_list = "\n".join(f"- {f}" for f in files)
+        return (
+            f"You MUST only change the following files:\n{file_list}\n\n"
+            f"{prompt_content}"
+        )
+    return None
 
 
 def create_parser() -> argparse.ArgumentParser:
