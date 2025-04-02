@@ -19,7 +19,7 @@ def main() -> None:
     )
 
     try:
-        coder = PromptCoder.create_for_files(args.files)
+        coder = PromptCoder(args.files)
         prompt = PromptCoder.load_prompt(args.command)
         coder.run(with_message=prompt)
     except Exception as e:

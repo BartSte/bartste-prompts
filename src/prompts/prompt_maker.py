@@ -11,17 +11,16 @@ from .utils import load_file_contents
 class PromptCoder(Coder):
     """Custom Coder class for prompt-based operations."""
 
-    @classmethod
-    def create_for_files(cls, files: List[str]) -> "PromptCoder":
-        """Create a PromptCoder instance configured for the given files."""
+    def __init__(self, files: List[str]):
+        """Initialize PromptCoder with the given files."""
         model_name = os.getenv("AIDER_MODEL")
         main_model = Model(model_name) if model_name else None
         io = InputOutput()
 
-        return cls.create(
+        super().__init__(
             io=io,
             fnames=files,
-            read_only_fnames=cls._get_convention_files(),
+            read_only_fnames=self._get_convention_files(),
             auto_commits=False,
             dirty_commits=False,
             stream=False,
