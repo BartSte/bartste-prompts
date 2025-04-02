@@ -31,13 +31,20 @@ class DocstringGenerator:
             self.io.tool_output("No files specified - nothing to do")
             return
 
-        # Create aider coder instance
+        # Create aider coder instance respecting AIDER_MODEL environment variable
+        from aider.models import Model
+        import os
+
+        model_name = os.getenv("AIDER_MODEL")
+        main_model = Model(model_name) if model_name else None
+
         coder = Coder.create(
             io=self.io,
             fnames=files,
             auto_commits=False,
             dirty_commits=False,
             stream=False,
+            main_model=main_model,
         )
 
         for file in files:
