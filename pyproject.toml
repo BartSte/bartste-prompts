@@ -1,5 +1,5 @@
 [project]
-name = "bartste-prompts"
+name = "prompts"
 version = "0.1.0"
 description = "A collection of prompts for the aider AI coding assistant"
 authors = [
@@ -18,11 +18,11 @@ dev = [
 ]
 
 [project.scripts]
-prompts = "bartste_prompts.__main__:main"
+prompts = "prompts.__main__:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
-packages = ["bartste_prompts"]
+packages = ["prompts"]
 
 [build-system]
 requires = ["setuptools>=42"]

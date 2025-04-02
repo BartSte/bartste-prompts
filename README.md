@@ -13,7 +13,7 @@ pip install bartste-prompts
 ### As a Python module
 
 ```python
-from prompts import *
+from prompts import *  # This matches the package name
 ```
 
 ### Command Line Interface

@@ -3,7 +3,7 @@
 import argparse
 import sys
 
-from ._cli.parser import create_parser
+from prompts._cli.parser import create_parser
 
 
 def main() -> None:
