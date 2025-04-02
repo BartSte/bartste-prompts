@@ -58,10 +58,6 @@ class DocstringGenerator:
 
         # Create aider coder instance respecting AIDER_MODEL environment
         # variable
-        import os
-
-        from aider.models import Model
-
         model_name = os.getenv("AIDER_MODEL")
         main_model = Model(model_name) if model_name else None
 
