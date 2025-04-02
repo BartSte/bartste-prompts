@@ -1,1 +1,1 @@
-"""Tests for bartste-prompts."""
+"""Tests for bbartste-artste-prompts."""

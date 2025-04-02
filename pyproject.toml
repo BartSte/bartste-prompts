@@ -13,7 +13,7 @@ dependencies = [
 ]
 
 [project.scripts]
-bartste-prompts = "bartste_prompts.__main__:main"
+prompts = "bartste_prompts.__main__:main"
 
 [build-system]
 requires = ["setuptools>=42"]

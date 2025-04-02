@@ -17,7 +17,7 @@ from bartste_prompts import prompts
 
 ### Command Line Interface
 ```bash
-bartste-prompts [options]
+prompts [options]
 ```
 
 Run without arguments to see available options.
