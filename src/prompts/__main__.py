@@ -8,7 +8,11 @@ from .prompt_maker import PromptCoder
 
 
 def main() -> None:
-    """Run the main CLI entry point."""
+    """Run the main CLI entry point.
+    
+    Parses command line arguments, sets up logging, and executes the prompt coder.
+    Handles any exceptions that occur during execution.
+    """
     parser = create_parser()
     args = parser.parse_args()
 
