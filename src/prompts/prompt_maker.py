@@ -35,12 +35,13 @@ class PromptMaker:
         )
         return load_file_contents(prompt_file)
 
-    def create_coder(self, files: List[str]) -> Coder:
-        """Create an Aider coder instance with convention files as read-only."""
+    def execute_command(self, command: str, files: List[str]) -> None:
+        """Execute the given command on the specified files."""
+        prompt = self.load_prompt(command)
         model_name = os.getenv("AIDER_MODEL")
         main_model = Model(model_name) if model_name else None
 
-        return Coder.create(
+        coder = Coder.create(
             io=self.io,
             fnames=files,
             read_only_fnames=self.convention_files,
@@ -50,4 +51,5 @@ class PromptMaker:
             main_model=main_model,
             auto_accept_architect=True,
         )
+        coder.run(with_message=prompt)
 
