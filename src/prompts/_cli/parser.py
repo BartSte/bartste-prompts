@@ -37,5 +37,27 @@ def create_parser() -> argparse.ArgumentParser:
         nargs="+",
         help="Files to process (required)"
     )
+
+    # Refactor subcommand
+    refactor_parser = subparsers.add_parser(
+        "refactor",
+        help="Refactor code based on best practices"
+    )
+    refactor_parser.add_argument(
+        "files",
+        nargs="+",
+        help="Files to process (required)"
+    )
+
+    # Fix subcommand
+    fix_parser = subparsers.add_parser(
+        "fix",
+        help="Fix bugs in the code"
+    )
+    fix_parser.add_argument(
+        "files",
+        nargs="+",
+        help="Files to process (required)"
+    )
     
     return parser
