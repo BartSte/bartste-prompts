@@ -5,7 +5,7 @@ from aider.coders import Coder
 from aider.io import InputOutput
 from aider.models import Model
 
-from ._cli.parser import command_to_prompt
+from .promptmaker import PromptMaker
 
 
 class PromptCoder:
@@ -65,7 +65,8 @@ class PromptCoder:
         Raises:
             ValueError: If no prompt is found for the command
         """
-        if prompt := command_to_prompt(command, self.files):
+        prompt_maker = PromptMaker(self.files)
+        if prompt := prompt_maker.get_prompt(command):
             logging.info(f"Running command: {command} with prompt: {prompt}")
             self._coder.run(prompt)
         else:
