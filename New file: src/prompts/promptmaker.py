@@ -1,7 +1,9 @@
 """PromptMaker module responsible for converting commands into prompt messages."""
 
 import os
+
 from .utils import load_file_contents
+
 
 class PromptMaker:
     """Convert a command into its corresponding prompt message, prepending a system prompt.
@@ -29,11 +31,15 @@ class PromptMaker:
         if not self.files:
             return None
 
-        prompt_file = os.path.join(os.path.dirname(__file__), "static", f"{command}.md")
+        prompt_file = os.path.join(
+            os.path.dirname(__file__), "static", f"{command}.md"
+        )
         prompt_content = load_file_contents(prompt_file, self.files)
         if prompt_content:
             file_list = "\n".join(f"- {f}" for f in self.files)
-            system_file = os.path.join(os.path.dirname(__file__), "static", "system.md")
+            system_file = os.path.join(
+                os.path.dirname(__file__), "static", "system.md"
+            )
             system_content = load_file_contents(system_file, None)
             if system_content:
                 system_prompt = system_content.format(file_list=file_list)
