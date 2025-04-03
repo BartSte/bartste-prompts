@@ -33,7 +33,12 @@ class PromptMaker:
         prompt_content = load_file_contents(prompt_file, self.files)
         if prompt_content:
             file_list = "\n".join(f"- {f}" for f in self.files)
-            system_prompt = f"You MUST only change the following files:\n{file_list}\n\n"
+            system_file = os.path.join(os.path.dirname(__file__), "static", "system.md")
+            system_content = load_file_contents(system_file, None)
+            if system_content:
+                system_prompt = system_content.format(file_list=file_list)
+            else:
+                system_prompt = f"You MUST only change the following files:\n{file_list}\n\n"
             return system_prompt + prompt_content
 
         return None
