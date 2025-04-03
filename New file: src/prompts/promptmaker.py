@@ -24,7 +24,7 @@ class PromptMaker:
             command: The command name for the prompt.
 
         Returns:
-            The full prompt with system message prepended, or None if not found.
+            The full prompt with system message prepended.
         """
         file_list = "\n".join(f"- {f}" for f in self.files)
         path_system_prompt = os.path.join(
@@ -45,11 +45,20 @@ class PromptMaker:
     def _read(path: str) -> str:
         """Read file content.
 
-        Args
+        Args:
             path: Path to the file.
 
         Returns:
             The file contents as a string.
+
+        Raises:
+            ValueError: If the file cannot be loaded or is empty.
         """
-        with open(path, "r", encoding="utf-8") as file:
-            return file.read()
+        try:
+            with open(path, "r", encoding="utf-8") as file:
+                content = file.read()
+        except Exception as e:
+            raise ValueError(f"Error loading file {path}: {e}") from e
+        if not content.strip():
+            raise ValueError(f"File {path} is empty.")
+        return content

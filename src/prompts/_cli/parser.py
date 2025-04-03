@@ -1,11 +1,6 @@
 """Command line argument parser for bartste-prompts."""
 
 import argparse
-import os
-
-from ..utils import load_file_contents
-
-
 
 
 def create_parser() -> argparse.ArgumentParser:
