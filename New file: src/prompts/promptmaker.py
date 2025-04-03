@@ -3,7 +3,6 @@
 import os
 
 
-
 class PromptMaker:
     """Convert a command into its corresponding prompt message, prepending a system prompt.
 
@@ -56,7 +55,9 @@ class PromptMaker:
         prompt_file = os.path.join(
             os.path.dirname(__file__), "static", f"{command}.md"
         )
-        prompt_content = PromptMaker._load_file_contents(prompt_file, self.files)
+        prompt_content = PromptMaker._load_file_contents(
+            prompt_file, self.files
+        )
         file_list = "\n".join(f"- {f}" for f in self.files)
         system_file = os.path.join(
             os.path.dirname(__file__), "static", "system.md"
