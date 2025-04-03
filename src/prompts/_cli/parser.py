@@ -9,7 +9,7 @@ def create_parser() -> argparse.ArgumentParser:
     Returns:
         Configured argument parser.
     """
-    parser = argparse.ArgumentParser(
+    parser: argparse.ArgumentParser = argparse.ArgumentParser(
         description="bartste-prompts CLI",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )

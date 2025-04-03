@@ -20,7 +20,8 @@ def main() -> str:
         Exception: If an unhandled exception occurs during execution, it is logged and may lead to exit.
     """
     parser = create_parser()
-    args = parser.parse_args()
+    import argparse
+    args: argparse.Namespace = parser.parse_args()
 
     logging.basicConfig(
         level=args.loglevel.upper(),
@@ -31,7 +32,7 @@ def main() -> str:
     promptcoder: Coder = coder.make(args.files)
     prompt: str = prompts.make(args.command, args.files)
     logging.info("Running prompt: %s", prompt)
-    return promptcoder.run(prompt)
+    promptcoder.run(prompt)
 
 
 if __name__ == "__main__":
