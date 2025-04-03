@@ -1,22 +1,23 @@
 """Main entry point for the bartste-prompts package."""
 
 import logging
-import sys
 
-from ._cli.parser import create_parser
-from .promptcoder import PromptCoder
+from aider.coders import Coder
+
+from prompts import coder, prompts
+from prompts._cli.parser import create_parser
 
 
-def main() -> None:
+def main() -> str:
     """Run the main CLI entry point.
 
-    Parses command line arguments, sets up logging, and executes the prompt
-    coder.
-    Handles any exceptions that occur during execution.
+    Parses command line arguments, sets up logging, and executes the prompt coder.
+
+    Returns:
+        str: The result of running the prompt coder.
 
     Raises:
-        Exception: Any unhandled exceptions during execution will be caught,
-            logged and result in exit code 1.
+        Exception: If an unhandled exception occurs during execution, it is logged and may lead to exit.
     """
     parser = create_parser()
     args = parser.parse_args()
@@ -27,14 +28,12 @@ def main() -> None:
         handlers=[logging.StreamHandler()],
     )
 
-    try:
-        prompter = PromptCoder(args.files)
-        prompter.run_command(args.command)
-    except Exception as e:
-        logging.error("An error occurred: %s", e)
-        sys.exit(1)
+    promptcoder: Coder = coder.make(args.files)
+    prompt: str = prompts.make(args.command, args.files)
+    logging.info("Running prompt: %s", prompt)
+    return promptcoder.run(prompt)
 
 
 if __name__ == "__main__":
-    """Execute main function when run as a script."""
+    # Execute main function when run as a script.
     main()
