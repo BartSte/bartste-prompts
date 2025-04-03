@@ -1,4 +1,5 @@
 """Module for constructing and managing prompts."""
+
 import os
 
 
@@ -12,16 +13,18 @@ def make(command: str, files: list[str]) -> str:
     Returns:
         A formatted combined prompt.
     """
-    file_list: str = "\n".join(f"- {f}" for f in files)
-    path_system_prompt = os.path.join(os.path.dirname(__file__), "system.md")
+    this_dir: str = os.path.dirname(__file__)
+
+    file_list: str = "\n".join(f"- {files}" for files in files)
+    path_system_prompt = os.path.join(this_dir, "system.md")
     system_prompt: str = _read(path_system_prompt)
     system_prompt = system_prompt.format(file_list=file_list)
 
-    path_user_prompt = os.path.join(os.path.dirname(__file__), f"{command}.md")
+    path_user_prompt = os.path.join(this_dir, f"{command}.md")
     user_prompt: str = _read(path_user_prompt)
     user_prompt = user_prompt.format(file_list=file_list)
 
-    return f"{system_prompt}\n\n{user_prompt}"
+    return f"{system_prompt}\n{user_prompt}"
 
 
 def _read(path: str) -> str:
