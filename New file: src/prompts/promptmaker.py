@@ -17,30 +17,7 @@ class PromptMaker:
         """
         self.files = files
 
-    @staticmethod
-    def _load_file_contents(filepath: str, files: list[str] | None) -> str:
-        """Load content from the given file and raise an error if loading fails.
-
-        Args:
-            filepath: The path to the file.
-            files: List of file paths (unused, for compatibility).
-
-        Returns:
-            The contents of the file.
-
-        Raises:
-            ValueError: If the file cannot be loaded or is empty.
-        """
-        try:
-            with open(filepath, "r") as f:
-                content = f.read()
-        except Exception as e:
-            raise ValueError(f"Error loading file {filepath}: {e}") from e
-        if not content.strip():
-            raise ValueError(f"File {filepath} is empty.")
-        return content
-
-    def get_prompt(self, command: str) -> str | None:
+    def get_prompt(self, command: str) -> str:
         """Generate prompt for the given command.
 
         Args:
@@ -49,19 +26,30 @@ class PromptMaker:
         Returns:
             The full prompt with system message prepended, or None if not found.
         """
-        if not self.files:
-            return None
-
-        prompt_file = os.path.join(
-            os.path.dirname(__file__), "static", f"{command}.md"
-        )
-        prompt_content = PromptMaker._load_file_contents(
-            prompt_file, self.files
-        )
         file_list = "\n".join(f"- {f}" for f in self.files)
-        system_file = os.path.join(
+        path_system_prompt = os.path.join(
             os.path.dirname(__file__), "static", "system.md"
         )
-        system_content = PromptMaker._load_file_contents(system_file, None)
-        system_prompt = system_content.format(file_list=file_list)
-        return system_prompt + prompt_content
+        system_prompt = self._read(path_system_prompt)
+        system_prompt = system_prompt.format(file_list=file_list)
+
+        path_user_prompt = os.path.join(
+            os.path.dirname(__file__), "static", f"{command}.md"
+        )
+        user_prompt = self._read(path_user_prompt)
+        user_prompt = user_prompt.format(file_list=file_list)
+
+        return f"{system_prompt}\n\n{user_prompt}"
+
+    @staticmethod
+    def _read(path: str) -> str:
+        """Read file content.
+
+        Args
+            path: Path to the file.
+
+        Returns:
+            The file contents as a string.
+        """
+        with open(path, "r", encoding="utf-8") as file:
+            return file.read()
