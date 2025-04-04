@@ -44,30 +44,30 @@ class Prompt:
 
         path_system: str = _join_prompts("system.md")
         path_user: str = _join_prompts("user", f"{command}.md")
-        paths_filetype: set[str] = {
-            _join_prompts("filetype", f"{filetype}.md")
-            for filetype in filetypes
+        filetype_paths: set[str] = {
+            _join_prompts("filetype", f"{ft}.md") for ft in filetypes
         }
         logging.info(
-            "Paths: system=%s, user=%s, filetypes=%s",
+            "Paths - system: %s, user: %s, filetype: %s",
             path_system,
             path_user,
-            paths_filetype,
+            filetype_paths,
         )
 
-        concatenated_files = "\n- ".join(files)
+        concatenated_files: str = "\n- ".join(files)
         logging.info("Concatenated files: %s", files)
 
-        kwargs: dict[str, str] = {
-            key: _read(value).format(files=concatenated_files)
-            for key, value in [
-                ("user", path_user),
-                ("system", path_system),
-                ("filetype", paths_filetype),
-            ]
-        }
+        user_prompt: str = _read(path_user).format(files=concatenated_files)
+        system_prompt: str = _read(path_system).format(
+            files=concatenated_files
+        )
+        filetype_prompt: str = "\n".join(
+            _read(fp).format(files=concatenated_files) for fp in filetype_paths
+        )
 
-        return cls(**kwargs)
+        return cls(
+            user=user_prompt, system=system_prompt, filetype=filetype_prompt
+        )
 
     def __str__(self) -> str:
         """Return the string representation of the Prompt object."""
@@ -105,10 +105,10 @@ def _guess_filetype(files: list[str]) -> set[str]:
 
 def _read(paths: str | Iterable[str]) -> str:
     """Reads and concatenates content from one or more file paths.
-    
+
     Args:
         paths (str | Iterable[str]): A single file path or an iterable of file paths.
-        
+
     Returns:
         str: A single string containing the contents of all files, separated by newlines.
     """
@@ -118,10 +118,10 @@ def _read(paths: str | Iterable[str]) -> str:
 
 def _read_one(path: str) -> str:
     """Reads content from a file.
-    
+
     Args:
         path (str): The file path to read from.
-        
+
     Returns:
         str: The file content as a string, or an empty string if the file does not exist.
     """

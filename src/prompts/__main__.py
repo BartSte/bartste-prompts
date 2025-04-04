@@ -6,23 +6,19 @@ from aider.coders import Coder
 
 from prompts import coder
 from prompts._cli.parser import create_parser
+import argparse
 from prompts.promptmaker import Prompt
 
 
-def main() -> str:
+def main() -> None:
     """Run the main CLI entry point.
 
     Parses command line arguments, sets up logging, and executes the prompt coder.
-
-    Returns:
-        str: The result of running the prompt coder.
 
     Raises:
         Exception: If an unhandled exception occurs during execution, it is logged and may lead to exit.
     """
     parser = create_parser()
-    import argparse
-
     args: argparse.Namespace = parser.parse_args()
 
     logging.basicConfig(

@@ -35,19 +35,28 @@ def _get_aider_model() -> Model | None:
     return None
 
 
+def _parse_env_files(env_value: str) -> list[str]:
+    """Parse a string from AIDER_READ environment variable to a list of file paths.
+    
+    Args:
+        env_value (str): The raw environment variable value.
+    
+    Returns:
+        list[str]: A list of file paths parsed from the input string.
+    """
+    if env_value.startswith("[") and env_value.endswith("]"):
+        return [f.strip().strip("'\"") for f in env_value[1:-1].split(",") if f.strip()]
+    return [env_value.strip()] if env_value.strip() else []
+
+
 def _get_aider_files() -> list[str]:
     """Parse file paths from AIDER_READ environment variable.
-
+    
     Returns:
-        List of expanded file paths from AIDER_READ.
+        list[str]: List of expanded file paths from AIDER_READ.
     """
-    aider_read: str | None = os.getenv("AIDER_READ")
+    aider_read = os.getenv("AIDER_READ")
     if not aider_read:
         return []
-
-    if aider_read.startswith("[") and aider_read.endswith("]"):
-        files: list[str] = [f.strip().strip("'\"") for f in aider_read[1:-1].split(",")]
-    else:
-        files: list[str] = [aider_read.strip()]
-
-    return [os.path.expandvars(f) for f in files if f.strip()]
+    file_list = _parse_env_files(aider_read)
+    return [os.path.expandvars(f) for f in file_list]
