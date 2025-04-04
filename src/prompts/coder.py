@@ -4,6 +4,7 @@ import os
 
 from aider.coders import Coder
 from aider.io import InputOutput
+from aider.models import Model
 
 from prompts.exceptions import ModelNotFoundError
 
@@ -18,7 +19,7 @@ def make(files: list[str]) -> Coder:
         raise ModelNotFoundError("AIDER_MODEL environment variable not set.")
 
     return Coder.create(
-        main_model=main_model,
+        main_model=Model(main_model),
         fnames=files,
         io=InputOutput(yes=True),
         auto_commits=False,

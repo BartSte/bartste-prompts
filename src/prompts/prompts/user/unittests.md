@@ -8,10 +8,9 @@ missing or unclear, make reasonable assumptions and explain those assumptions.
 Place these tests in a separate file, following typical conventions:
 
 - Name the test file as `test_<original_file_name>.<ext>` (for example, if the
-  source file is `src/module.py`, the test file should be named
-  `test_module.py`).
+  source file is `file.abc`, the test file should be named `test_file.abc`).
 - Maintain a directory structure that prepends `tests_` before each directory
-  component, so `path/to/module.py` becomes `tests_path/test_to/test_module.py`.
+  component.
 
 Ensure that each test follows established best practices for the chosen testing
 framework, including descriptive test names, clear setup/teardown steps (if

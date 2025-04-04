@@ -25,6 +25,7 @@ def create_parser() -> argparse.ArgumentParser:
         "typehints": "Add type hints to files",
         "refactor": "Refactor code based on best practices",
         "fix": "Fix bugs in the code",
+        "unittests": "Generate thorough unit tests for files",
     }
     for cmd, help_text in commands.items():
         subparser = subparsers.add_parser(cmd, help=help_text)
