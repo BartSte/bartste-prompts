@@ -37,7 +37,7 @@ class PromptCoder:
             message: The prompt/message to send to aider.
 
         Returns:
-            The complete command as a list of strings.
+            list[str]: The complete command as a list of strings suitable for subprocess.
         """
         return self.aider + self.options + ["--message", message] + self.files
 
@@ -46,6 +46,9 @@ class PromptCoder:
 
         Args:
             process: The running subprocess to stream output from.
+
+        Raises:
+            AiderError: If the process stdout is not available.
         """
         if process.stdout is None:
             raise AiderError("Process stdout is None")
@@ -60,7 +63,7 @@ class PromptCoder:
             process: The completed subprocess to check.
 
         Raises:
-            SystemExit: If the process failed.
+            AiderError: If the process return code indicates failure.
         """
         if process.returncode != 0:
             raise AiderError("aider command failed")
@@ -68,11 +71,14 @@ class PromptCoder:
     def run(self, message: str) -> None:
         """Runs aider with the given message and files.
 
+        Executes the aider command as a subprocess, streams its output,
+        and checks the result.
+
         Args:
             message: The prompt/message to send to aider.
 
         Raises:
-            SystemExit: If the aider command fails.
+            AiderError: If the subprocess fails or encounters an error.
         """
         cmd = self._build_command(message)
 
