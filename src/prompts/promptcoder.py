@@ -30,6 +30,39 @@ class PromptCoder:
             "--no-dirty-commit",
         ]
 
+    def _build_command(self, message: str) -> list[str]:
+        """Constructs the full aider command to execute.
+        
+        Args:
+            message: The prompt/message to send to aider.
+            
+        Returns:
+            The complete command as a list of strings.
+        """
+        return self.aider + self.options + ["--message", message] + self.files
+
+    def _stream_process_output(self, process: subprocess.Popen[str]) -> None:
+        """Streams the process output to stdout in real-time.
+        
+        Args:
+            process: The running subprocess to stream output from.
+        """
+        for line in process.stdout:
+            print(line, end='')
+
+    def _handle_process_result(self, process: subprocess.Popen[str]) -> None:
+        """Checks and handles the process result.
+        
+        Args:
+            process: The completed subprocess to check.
+            
+        Raises:
+            SystemExit: If the process failed.
+        """
+        if process.returncode != 0:
+            logging.error("aider command failed")
+            sys.exit(1)
+
     def run(self, message: str) -> None:
         """Runs aider with the given message and files.
 
@@ -39,12 +72,10 @@ class PromptCoder:
         Raises:
             SystemExit: If the aider command fails.
         """
-        cmd: list[str] = (
-            self.aider + self.options + ["--message", message] + self.files
-        )
+        cmd = self._build_command(message)
 
         try:
-            process: subprocess.Popen[str] = subprocess.Popen(
+            process = subprocess.Popen(
                 cmd,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
@@ -52,15 +83,9 @@ class PromptCoder:
                 text=True,
             )
             
-            # Stream output in real-time
-            for line in process.stdout:
-                print(line, end='')
-            
+            self._stream_process_output(process)
             process.wait()
-            
-            if process.returncode != 0:
-                logging.error("aider command failed")
-                sys.exit(1)
+            self._handle_process_result(process)
                 
         except subprocess.SubprocessError as e:
             logging.error("Error occurred while running aider: %s", str(e))
