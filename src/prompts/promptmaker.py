@@ -8,7 +8,7 @@ from typing import Iterable, Self
 
 from pygeneral import path
 
-from prompts import markdown
+from prompts import _prompts
 
 
 @dataclass
@@ -88,7 +88,7 @@ def _join_prompts(*args: str) -> str:
     Returns:
         str: The joined path to the prompt file.
     """
-    return join(path.module(markdown), *args)
+    return join(path.module(_prompts), *args)
 
 
 def _guess_filetype(files: list[str]) -> set[str]:
