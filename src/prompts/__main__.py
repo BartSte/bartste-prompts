@@ -59,7 +59,7 @@ def main() -> None:
     prompt: Prompt = Prompt.create(command=args.command, files=args.files)
     if not args.quiet:
         logging.info("Running prompt: %s", prompt)
-    return promptcoder.run(str(prompt), args.quiet
+    return promptcoder.run(str(prompt), args.quiet)
 
 
 if __name__ == "__main__":
