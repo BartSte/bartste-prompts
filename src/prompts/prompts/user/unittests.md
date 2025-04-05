@@ -7,11 +7,10 @@ missing or unclear, make reasonable assumptions and explain those assumptions.
 
 Place these tests in a separate file, following typical conventions:
 
-- Name the test file as `test_<original_file_name>.<ext>` (for example, if the
-  source file is `file.abc`, the test file should be named `test_file.abc`).
-- Maintain a directory structure that prepends `tests_` before each directory
-  component.
-
-Ensure that each test follows established best practices for the chosen testing
-framework, including descriptive test names, clear setup/teardown steps (if
-needed), and meaningful assertions.
+- The file holding the unittests is named `test_<original_file_name>.<ext>` (for
+  example, if the source file is `file.abc`, the test file should be named
+  `test_file.abc`.)
+- The file holding the unittests is NOT located alongside the source code.
+  Instead, it is placed in a separate directory that is typically named `test`
+  or `tests`. Here, the directory structure is typically the same as that in
+  source code but now each file and directory is prefixed with "test\_".
