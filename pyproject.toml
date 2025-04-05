@@ -6,7 +6,7 @@ authors = [
     {name = "BartSte" },
 ]
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = "<=3.12"
 license = {text = "MIT"}
 dependencies = [
     "aider-chat>=0.8.0",
