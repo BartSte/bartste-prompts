@@ -31,6 +31,25 @@ def _excepthook(
     sys.exit(1)
 
 
+def _setup_logger(loglevel: str = "WARNING", quiet: bool = False) -> None:
+    """Set up the logger for the prompts CLI.
+    Args:
+        quiet: Whether to set the logger to a quiet mode.
+
+    """
+    if quiet:
+        logging.basicConfig(
+            level=logging.CRITICAL,
+            handlers=[logging.NullHandler()],
+        )
+    else:
+        logging.basicConfig(
+            level=loglevel.upper(),
+            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            handlers=[logging.StreamHandler()],
+        )
+
+
 def main() -> None:
     """Run the main CLI entry point.
 
@@ -42,23 +61,10 @@ def main() -> None:
     """
     parser = create_parser()
     args: argparse.Namespace = parser.parse_args()
-
-    if not args.quiet:
-        logging.basicConfig(
-            level=args.loglevel.upper(),
-            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            handlers=[logging.StreamHandler()],
-        )
-    else:
-        logging.basicConfig(
-            level=logging.CRITICAL,
-            handlers=[logging.NullHandler()],
-        )
-
+    _setup_logger(args.loglevel, args.quiet)
     promptcoder: PromptCoder = PromptCoder(args.files)
     prompt: Prompt = Prompt.create(command=args.command, files=args.files)
-    if not args.quiet:
-        logging.info("Running prompt: %s", prompt)
+    logging.info("Running prompt: %s", prompt)
     return promptcoder.run(str(prompt), args.quiet)
 
 

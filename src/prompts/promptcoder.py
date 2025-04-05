@@ -15,6 +15,9 @@ class PromptCoder:
         aider: Base command to run aider via Python module.
         options: Default options to pass to aider CLI.
     """
+    files: list[str]
+    aider: list[str]
+    options: list[str]
 
     def __init__(self, files: list[str]) -> None:
         """Initializes the PromptCoder with files to edit.
@@ -90,7 +93,7 @@ class PromptCoder:
             AiderError: If the subprocess fails or encounters an error.
         """
         cmd = self._build_command(message)
-        pipe: int = subprocess.PIPE if not quiet else subprocess.DEVNULL
+        pipe: int | None = subprocess.PIPE if not quiet else subprocess.DEVNULL
         try:
             process: subprocess.Popen[str] = subprocess.Popen(
                 cmd,
@@ -104,4 +107,6 @@ class PromptCoder:
             self._wait_for_result(process)
 
         except subprocess.SubprocessError as e:
-            raise AiderError(f"Error occurred while running aider: {str(e)}")
+            raise AiderError(
+                f"Error occurred while running aider: {str(e)}"
+            ) from e
