@@ -8,12 +8,13 @@ from typing import Iterable, Self
 
 from pygeneral import path
 
-from prompts import prompts
+from prompts import markdown
 
 
 @dataclass
 class Prompt:
-    """Represents a prompt constructed from system, user, and filetype components.
+    """Represents a prompt constructed from system, user, and filetype
+    components.
 
     Attributes:
         user (str): The user prompt text.
@@ -33,11 +34,13 @@ class Prompt:
         """Creates a Prompt instance from a command and a list of files.
 
         Args:
-            command (str): The command to use for constructing a user-specific prompt.
-            files (list[str]): A list of file paths used for determining filetypes.
+            command (str): The command to use for constructing a user-specific
+            prompt. files (list[str]): A list of file paths used for
+            determining filetypes.
 
         Returns:
-            Self: A Prompt instance with the constructed prompt text components.
+            Self: A Prompt instance with the constructed prompt text
+            components.
         """
         filetypes: set[str] = _guess_filetype(files)
         logging.info("Guessed filetypes: %s", filetypes)
@@ -85,7 +88,7 @@ def _join_prompts(*args: str) -> str:
     Returns:
         str: The joined path to the prompt file.
     """
-    return join(path.module(prompts), *args)
+    return join(path.module(markdown), *args)
 
 
 def _guess_filetype(files: list[str]) -> set[str]:
@@ -107,10 +110,11 @@ def _read(paths: str | Iterable[str]) -> str:
     """Reads and concatenates content from one or more file paths.
 
     Args:
-        paths (str | Iterable[str]): A single file path or an iterable of file paths.
+        paths (str | Iterable[str]): A single file path or an iterable of file
+        paths.
 
-    Returns:
-        str: A single string containing the contents of all files, separated by newlines.
+    Returns: str: A single string containing the contents of all files,
+    separated by newlines.
     """
     paths = [paths] if isinstance(paths, str) else paths
     return "\n".join(_read_one(path) for path in paths)
@@ -123,7 +127,8 @@ def _read_one(path: str) -> str:
         path (str): The file path to read from.
 
     Returns:
-        str: The file content as a string, or an empty string if the file does not exist.
+        str: The file content as a string, or an empty string if the file does
+        not exist.
     """
     if not exists(path):
         return ""
