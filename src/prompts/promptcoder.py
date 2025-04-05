@@ -1,6 +1,7 @@
 import logging
 import subprocess
 import sys
+from collections.abc import Iterable
 
 
 class PromptCoder:
@@ -43,11 +44,12 @@ class PromptCoder:
         )
 
         try:
-            process = subprocess.Popen(
+            process: subprocess.Popen[str] = subprocess.Popen(
                 cmd,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                universal_newlines=True
+                universal_newlines=True,
+                text=True,
             )
             
             # Stream output in real-time
