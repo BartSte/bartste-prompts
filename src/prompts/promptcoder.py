@@ -60,8 +60,7 @@ class PromptCoder:
             SystemExit: If the process failed.
         """
         if process.returncode != 0:
-            logging.error("aider command failed")
-            sys.exit(1)
+            raise AiderError("aider command failed")
 
     def run(self, message: str) -> None:
         """Runs aider with the given message and files.
@@ -88,5 +87,4 @@ class PromptCoder:
             self._handle_process_result(process)
                 
         except subprocess.SubprocessError as e:
-            logging.error("Error occurred while running aider: %s", str(e))
-            sys.exit(1)
+            raise AiderError(f"Error occurred while running aider: {str(e)}")
