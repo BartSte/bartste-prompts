@@ -37,7 +37,7 @@ class PromptCoder:
             message: The prompt/message to send to aider.
 
         Returns:
-            list[str]: The complete command as a list of strings suitable for subprocess.
+            Complete command as a list of strings suitable for subprocess.
         """
         return self.aider + self.options + ["--message", message] + self.files
 

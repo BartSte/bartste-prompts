@@ -34,5 +34,7 @@ def create_parser() -> argparse.ArgumentParser:
     }
     for cmd, help_text in commands.items():
         subparser = subparsers.add_parser(cmd, help=help_text)
-        subparser.add_argument("files", nargs="+", help="Files to process (required)")
+        subparser.add_argument(
+            "files", nargs="+", help="Files to process (required)"
+        )
     return parser
