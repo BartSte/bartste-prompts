@@ -43,16 +43,23 @@ def main() -> None:
     parser = create_parser()
     args: argparse.Namespace = parser.parse_args()
 
-    logging.basicConfig(
-        level=args.loglevel.upper(),
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        handlers=[logging.StreamHandler()],
-    )
+    if not args.quiet:
+        logging.basicConfig(
+            level=args.loglevel.upper(),
+            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            handlers=[logging.StreamHandler()],
+        )
+    else:
+        logging.basicConfig(
+            level=logging.CRITICAL,
+            handlers=[logging.NullHandler()],
+        )
 
     promptcoder: PromptCoder = PromptCoder(args.files)
     prompt: Prompt = Prompt.create(command=args.command, files=args.files)
-    logging.info("Running prompt: %s", prompt)
-    return promptcoder.run(str(prompt))
+    if not args.quiet:
+        logging.info("Running prompt: %s", prompt)
+    return promptcoder.run(str(prompt), args.quiet
 
 
 if __name__ == "__main__":

@@ -19,6 +19,11 @@ def create_parser() -> argparse.ArgumentParser:
         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
         help="Set the logging level",
     )
+    parser.add_argument(
+        "--quiet",
+        action="store_true",
+        help="Suppress all output (overrides loglevel)",
+    )
     subparsers = parser.add_subparsers(dest="command")
     commands = {
         "docstrings": "Add docstrings to files",

@@ -71,6 +71,15 @@ class PromptCoder:
     def run(self, message: str, quiet: bool = False) -> None:
         """Runs aider with the given message and files.
 
+        Args:
+            message: The prompt/message to send to aider.
+            quiet: If True, suppresses all output.
+
+        Raises:
+            AiderError: If the subprocess fails or encounters an error.
+        """
+        """Runs aider with the given message and files.
+
         Executes the aider command as a subprocess, streams its output,
         and checks the result.
 
