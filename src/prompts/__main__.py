@@ -3,70 +3,74 @@
 import argparse
 import logging
 import sys
+from typing import NoReturn
 
 from prompts._cli.parser import create_parser
-from prompts.exceptions import AiderError
+from prompts.exceptions import AiderError, PromptError
 from prompts.promptcoder import PromptCoder
 from prompts.promptmaker import Prompt
 
-
 def _excepthook(
-    exc_type: type[BaseException], exc_value: BaseException, exc_traceback
-) -> None:
-    """Custom exception hook that logs exceptions differently based on their
-    type.
-
+    exc_type: type[BaseException], 
+    exc_value: BaseException, 
+    exc_traceback
+) -> NoReturn:
+    """Handle uncaught exceptions.
+    
     Args:
-        exc_type: Exception class
-        exc_value: Exception instance
-        exc_traceback: Traceback object
+        exc_type: Exception class.
+        exc_value: Exception instance.
+        exc_traceback: Traceback object.
     """
-    if exc_type in (AiderError,):
+    if isinstance(exc_value, (AiderError, PromptError)):
         logging.error(str(exc_value))
     else:
         logging.critical(
             "Unhandled exception",
-            exc_info=(exc_type, exc_value, exc_traceback),
+            exc_info=(exc_type, exc_value, exc_traceback)
         )
     sys.exit(1)
 
-
 def _setup_logger(loglevel: str = "WARNING", quiet: bool = False) -> None:
-    """Set up the logger for the prompts CLI.
+    """Configure logging for the CLI.
+    
     Args:
-        quiet: Whether to set the logger to a quiet mode.
-
+        loglevel: Logging level string.
+        quiet: If True, suppress all logging output.
     """
     if quiet:
         logging.basicConfig(
             level=logging.CRITICAL,
-            handlers=[logging.NullHandler()],
+            handlers=[logging.NullHandler()]
         )
-    else:
-        logging.basicConfig(
-            level=loglevel.upper(),
-            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            handlers=[logging.StreamHandler()],
-        )
+        return
+        
+    logging.basicConfig(
+        level=loglevel.upper(),
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[logging.StreamHandler()]
+    )
 
+def _execute_command(args: argparse.Namespace) -> None:
+    """Execute the requested command.
+    
+    Args:
+        args: Parsed command line arguments.
+        
+    Raises:
+        PromptError: If prompt construction fails.
+        AiderError: If aider execution fails.
+    """
+    prompt = Prompt.create(command=args.command, files=args.files)
+    logging.info("Running prompt: %s", prompt)
+    PromptCoder(args.files).run(str(prompt), args.quiet)
 
 def main() -> None:
-    """Run the main CLI entry point.
-
-    Parses command line arguments, sets up logging, and executes the prompt
-    coder.
-
-    Raises: Exception: If an unhandled exception occurs during execution, it is
-        logged and may lead to exit.
-    """
+    """Run the CLI entry point."""
     parser = create_parser()
-    args: argparse.Namespace = parser.parse_args()
+    args = parser.parse_args()
     _setup_logger(args.loglevel, args.quiet)
-    promptcoder: PromptCoder = PromptCoder(args.files)
-    prompt: Prompt = Prompt.create(command=args.command, files=args.files)
-    logging.info("Running prompt: %s", prompt)
-    return promptcoder.run(str(prompt), args.quiet)
-
+    _execute_command(args)
 
 if __name__ == "__main__":
     sys.excepthook = _excepthook

@@ -1,112 +1,90 @@
+"""Wrapper for running aider CLI commands."""
+
 import subprocess
 import sys
+from collections.abc import Sequence
+from typing import Literal
 
 from prompts.exceptions import AiderError
 
-
-class PromptCoder:
-    """Wrapper for running aider CLI commands.
-
-    Uses the aider CLI instead of direct Python module usage since aider's
-    Python module is still experimental.
-
-    Attributes:
-        files: List of file paths to include in the aider session.
-        aider: Base command to run aider via Python module.
-        options: Default options to pass to aider CLI.
-    """
-    files: list[str]
-    aider: list[str]
-    options: list[str]
-
-    def __init__(self, files: list[str]) -> None:
-        """Initializes the PromptCoder with files to edit.
-
+class ProcessRunner:
+    """Handles subprocess execution and output streaming."""
+    
+    @staticmethod
+    def run(
+        cmd: Sequence[str],
+        quiet: bool = False
+    ) -> None:
+        """Execute a command and stream its output.
+        
         Args:
-            files: List of file paths to include in the aider session.
-        """
-        self.files = files
-        self.aider = [sys.executable, "-m", "aider"]
-        self.options = [
-            "--yes",
-            "--no-auto-commit",
-            "--no-dirty-commit",
-        ]
-
-    def _build_command(self, message: str) -> list[str]:
-        """Constructs the full aider command to execute.
-
-        Args:
-            message: The prompt/message to send to aider.
-
-        Returns:
-            Complete command as a list of strings suitable for subprocess.
-        """
-        return self.aider + self.options + ["--message", message] + self.files
-
-    def _stream_process_output(self, process: subprocess.Popen[str]) -> None:
-        """Streams the process output to stdout in real-time.
-
-        Args:
-            process: The running subprocess to stream output from.
-
+            cmd: Command to execute as sequence of strings.
+            quiet: If True, suppress all output.
+            
         Raises:
-            AiderError: If the process stdout is not available.
+            AiderError: If command fails or encounters an error.
         """
-        if process.stdout is None:
-            return
-
-        for line in process.stdout:
-            print(line, end="")
-
-    def _wait_for_result(self, process: subprocess.Popen[str]) -> None:
-        """Checks and handles the process result.
-
-        Args:
-            process: The completed subprocess to check.
-
-        Raises:
-            AiderError: If the process return code indicates failure.
-        """
-        if process.wait() != 0:
-            raise AiderError("aider command failed")
-
-    def run(self, message: str, quiet: bool = False) -> None:
-        """Runs aider with the given message and files.
-
-        Args:
-            message: The prompt/message to send to aider.
-            quiet: If True, suppresses all output.
-
-        Raises:
-            AiderError: If the subprocess fails or encounters an error.
-        """
-        """Runs aider with the given message and files.
-
-        Executes the aider command as a subprocess, streams its output,
-        and checks the result.
-
-        Args:
-            message: The prompt/message to send to aider.
-
-        Raises:
-            AiderError: If the subprocess fails or encounters an error.
-        """
-        cmd = self._build_command(message)
-        pipe: int | None = subprocess.PIPE if not quiet else subprocess.DEVNULL
+        pipe = subprocess.PIPE if not quiet else subprocess.DEVNULL
         try:
-            process: subprocess.Popen[str] = subprocess.Popen(
+            with subprocess.Popen(
                 cmd,
                 stdout=pipe,
                 stderr=pipe,
-                universal_newlines=True,
                 text=True,
-            )
-
-            self._stream_process_output(process)
-            self._wait_for_result(process)
-
+                universal_newlines=True,
+            ) as process:
+                if process.stdout:
+                    for line in process.stdout:
+                        print(line, end="")
+                
+                if process.wait() != 0:
+                    raise AiderError("Command failed")
+                    
         except subprocess.SubprocessError as e:
-            raise AiderError(
-                f"Error occurred while running aider: {str(e)}"
-            ) from e
+            raise AiderError(f"Error running command: {str(e)}") from e
+
+class PromptCoder:
+    """Handles construction and execution of aider commands."""
+
+    def __init__(self, files: Sequence[str]) -> None:
+        """Initialize with files to edit.
+        
+        Args:
+            files: File paths to include in aider session.
+        """
+        self.files = list(files)
+        self._aider_cmd = [sys.executable, "-m", "aider"]
+        self._aider_options = [
+            "--yes",
+            "--no-auto-commit", 
+            "--no-dirty-commit",
+        ]
+
+    def build_command(self, message: str) -> list[str]:
+        """Construct the full aider command.
+        
+        Args:
+            message: Prompt/message to send to aider.
+            
+        Returns:
+            Complete command as list of strings.
+        """
+        return [
+            *self._aider_cmd,
+            *self._aider_options,
+            "--message", message,
+            *self.files
+        ]
+
+    def run(self, message: str, quiet: bool = False) -> None:
+        """Run aider with given message and files.
+        
+        Args:
+            message: Prompt/message to send to aider.
+            quiet: If True, suppress all output.
+            
+        Raises:
+            AiderError: If subprocess fails.
+        """
+        cmd = self.build_command(message)
+        ProcessRunner.run(cmd, quiet)
