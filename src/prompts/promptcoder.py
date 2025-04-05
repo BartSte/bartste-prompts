@@ -1,7 +1,7 @@
-import logging
 import subprocess
 import sys
-from collections.abc import Iterable
+
+from prompts.exceptions import AiderError
 
 
 class PromptCoder:
@@ -32,10 +32,10 @@ class PromptCoder:
 
     def _build_command(self, message: str) -> list[str]:
         """Constructs the full aider command to execute.
-        
+
         Args:
             message: The prompt/message to send to aider.
-            
+
         Returns:
             The complete command as a list of strings.
         """
@@ -43,19 +43,22 @@ class PromptCoder:
 
     def _stream_process_output(self, process: subprocess.Popen[str]) -> None:
         """Streams the process output to stdout in real-time.
-        
+
         Args:
             process: The running subprocess to stream output from.
         """
+        if process.stdout is None:
+            raise AiderError("Process stdout is None")
+
         for line in process.stdout:
-            print(line, end='')
+            print(line, end="")
 
     def _handle_process_result(self, process: subprocess.Popen[str]) -> None:
         """Checks and handles the process result.
-        
+
         Args:
             process: The completed subprocess to check.
-            
+
         Raises:
             SystemExit: If the process failed.
         """
@@ -74,17 +77,17 @@ class PromptCoder:
         cmd = self._build_command(message)
 
         try:
-            process = subprocess.Popen(
+            process: subprocess.Popen[str] = subprocess.Popen(
                 cmd,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 universal_newlines=True,
                 text=True,
             )
-            
+
             self._stream_process_output(process)
             process.wait()
             self._handle_process_result(process)
-                
+
         except subprocess.SubprocessError as e:
             raise AiderError(f"Error occurred while running aider: {str(e)}")

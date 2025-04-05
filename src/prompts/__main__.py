@@ -3,28 +3,33 @@
 import argparse
 import logging
 import sys
-from typing import Type
-
-from prompts.exceptions import AiderError, ModelNotFoundError
 
 from prompts._cli.parser import create_parser
+from prompts.exceptions import AiderError
 from prompts.promptcoder import PromptCoder
 from prompts.promptmaker import Prompt
 
 
-def _excepthook(exc_type: Type[BaseException], exc_value: BaseException, exc_traceback) -> None:
-    """Custom exception hook that logs exceptions differently based on their type.
-    
+def _excepthook(
+    exc_type: type[BaseException], exc_value: BaseException, exc_traceback
+) -> None:
+    """Custom exception hook that logs exceptions differently based on their
+    type.
+
     Args:
         exc_type: Exception class
         exc_value: Exception instance
         exc_traceback: Traceback object
     """
-    if exc_type in (AiderError, ModelNotFoundError):
+    if exc_type in (AiderError,):
         logging.error(str(exc_value))
     else:
-        logging.critical("Unhandled exception", exc_info=(exc_type, exc_value, exc_traceback))
+        logging.critical(
+            "Unhandled exception",
+            exc_info=(exc_type, exc_value, exc_traceback),
+        )
     sys.exit(1)
+
 
 def main() -> None:
     """Run the main CLI entry point.
