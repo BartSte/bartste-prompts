@@ -29,14 +29,11 @@ class PromptCoder:
             "--no-dirty-commit",
         ]
 
-    def run(self, message: str) -> str:
+    def run(self, message: str) -> None:
         """Runs aider with the given message and files.
 
         Args:
             message: The prompt/message to send to aider.
-
-        Returns:
-            The stdout output from the aider command.
 
         Raises:
             SystemExit: If the aider command fails.
@@ -46,12 +43,23 @@ class PromptCoder:
         )
 
         try:
-            stdout: bytes = subprocess.check_output(cmd)
-        except subprocess.CalledProcessError as e:
-            logging.error(
-                "Error occurred while running aider: %s",
-                e.stdout.decode("utf-8"),
+            process = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                universal_newlines=True
             )
+            
+            # Stream output in real-time
+            for line in process.stdout:
+                print(line, end='')
+            
+            process.wait()
+            
+            if process.returncode != 0:
+                logging.error("aider command failed")
+                sys.exit(1)
+                
+        except subprocess.SubprocessError as e:
+            logging.error("Error occurred while running aider: %s", str(e))
             sys.exit(1)
-        else:
-            return stdout.decode("utf-8")
