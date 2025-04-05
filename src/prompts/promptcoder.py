@@ -51,12 +51,12 @@ class PromptCoder:
             AiderError: If the process stdout is not available.
         """
         if process.stdout is None:
-            raise AiderError("Process stdout is None")
+            return
 
         for line in process.stdout:
             print(line, end="")
 
-    def _handle_process_result(self, process: subprocess.Popen[str]) -> None:
+    def _wait_for_result(self, process: subprocess.Popen[str]) -> None:
         """Checks and handles the process result.
 
         Args:
@@ -65,10 +65,10 @@ class PromptCoder:
         Raises:
             AiderError: If the process return code indicates failure.
         """
-        if process.returncode != 0:
+        if process.wait() != 0:
             raise AiderError("aider command failed")
 
-    def run(self, message: str) -> None:
+    def run(self, message: str, quiet: bool = False) -> None:
         """Runs aider with the given message and files.
 
         Executes the aider command as a subprocess, streams its output,
@@ -81,19 +81,18 @@ class PromptCoder:
             AiderError: If the subprocess fails or encounters an error.
         """
         cmd = self._build_command(message)
-
+        pipe: int = subprocess.PIPE if not quiet else subprocess.DEVNULL
         try:
             process: subprocess.Popen[str] = subprocess.Popen(
                 cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                stdout=pipe,
+                stderr=pipe,
                 universal_newlines=True,
                 text=True,
             )
 
             self._stream_process_output(process)
-            process.wait()
-            self._handle_process_result(process)
+            self._wait_for_result(process)
 
         except subprocess.SubprocessError as e:
             raise AiderError(f"Error occurred while running aider: {str(e)}")
