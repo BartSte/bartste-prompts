@@ -2,8 +2,9 @@
 
 **WORK IN PROGRESS**
 
-## Installation
+Retrieve prompts for specific tasks and programming languages that can be used
+for LLMs. For example, with Aider:
 
-```bash
-pip install bartste-prompts
+```
+aider --yes-always --message "$(prompts docstrings --filetype python)" src/prompts/promptmaker.py
 ```
