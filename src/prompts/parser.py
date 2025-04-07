@@ -1,6 +1,7 @@
 import argparse
 from collections.abc import Mapping
 
+"""Mapping of available commands to their help text."""
 _COMMANDS: Mapping[str, str] = {
     "docstrings": "Add docstrings to files",
     "typehints": "Add type hints to files",
@@ -11,6 +12,11 @@ _COMMANDS: Mapping[str, str] = {
 
 
 def setup() -> argparse.ArgumentParser:
+    """Initialize and configure the argument parser.
+
+    Returns:
+        argparse.ArgumentParser: Configured parser with subcommands and options.
+    """
     parser = argparse.ArgumentParser(
         description="Returns prompts for AI models.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -24,6 +30,11 @@ def setup() -> argparse.ArgumentParser:
 
 
 def _add_options(parser: argparse.ArgumentParser) -> None:
+    """Add common command line options to a parser.
+
+    Args:
+        parser: Argument parser to add options to
+    """
     parser.add_argument(
         "-f",
         "--filetype",
