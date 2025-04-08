@@ -2,7 +2,7 @@ When writing Lua code, you MUST follow these principles:
 
 - Prefer local variables over global ones. Always declare variables with `local` unless there's a specific reason to use globals.
 - Use proper table construction patterns:
-  - Use `{}` for tables with sequential indexes (arrays)
+  - Use `{{}}` for tables with sequential indexes (arrays)
   - Use table constructors with explicit keys for dictionaries
   - Prefer `table.insert()` for adding to arrays
 - Handle nil values properly using `if` checks or the `or` operator
@@ -17,11 +17,11 @@ When writing Lua code, you MUST follow these principles:
 - Use module pattern for code organization:
 
   ```lua
-  local M = {}
+  local M = {{}}
 
   function M.new(init_val)
-      local obj = {value = init_val or 0}
-      setmetatable(obj, {__index = M})
+      local obj = {{value = init_val or 0}}
+      setmetatable(obj, {{__index = M}})
       return obj
   end
 
@@ -38,7 +38,7 @@ When writing Lua code, you MUST follow these principles:
   --- A simple counter class
   ---@class Counter
   ---@field value number The current count value
-  local Counter = {}
+  local Counter = {{}}
 
   --- Create a new Counter instance
   -- @param init_val number (optional) Initial value

@@ -10,9 +10,9 @@ When writing Bash scripts, you MUST follow these principles:
   # @brief Create a new directory and enter it
   # @param -p PARENT  Parent directory
   # @param DIRNAME    Directory to create
-  mkcd() {
+  mkcd() {{
       # ...
-  }
+  }}
   ```
 - Follow POSIX compatibility guidelines:
   - Use `#!/bin/sh` for portable scripts

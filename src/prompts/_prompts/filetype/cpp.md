@@ -6,12 +6,12 @@ When writing C++ code, you MUST follow these principles:
 - Document classes and functions using Doxygen-style:
   ```cpp
   /// @brief Matrix class for linear algebra operations
-  class Matrix {
+  class Matrix {{
   public:
       /// @brief Construct identity matrix
       /// @param size Matrix dimension
       explicit Matrix(size_t size);
-  };
+  }};
   ```
 - Follow type safety guidelines:
   - Use static_cast over C-style casts

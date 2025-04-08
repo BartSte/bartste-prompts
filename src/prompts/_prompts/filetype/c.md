@@ -13,9 +13,9 @@ When writing C code, you MUST follow these principles:
    * @param b Second operand
    * @return Sum of a and b
    */
-  int add(int a, int b) {
+  int add(int a, int b) {{
       return a + b;
-  }
+  }}
   ```
 - Use proper error handling:
   - Check return values from system calls
