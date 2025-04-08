@@ -57,33 +57,25 @@ class Prompt:
 
 
 def _join_prompts(*args: str) -> str:
-    """Construct path to prompt files within the package.
-
-    Args:
-        *args: Path components relative to prompts directory
-
-    Returns:
-        Absolute path to the requested prompt file
-    """
     """Join prompt file segments to form a full prompt path.
 
     Args:
         *args: Individual parts of the prompt file path.
 
     Returns:
-        str: The joined path to the prompt file.
+        The joined path to the prompt file.
     """
     return join(path.module(_prompts), *args)
 
 
 def _read(path: str) -> str:
-    """Read contents of a file with proper UTF-8 encoding.
+    """Read contents of a file using UTF-8 encoding.
 
     Args:
-        path: Absolute path to file to read
+        path: Absolute path to the file to read.
 
     Returns:
-        File contents as string, or empty string if file not found
+        Contents of the file as a string. Returns empty string if file is not found.
     """
     if not path or not exists(path):
         return ""

@@ -56,6 +56,11 @@ def _add_options(parser: argparse.ArgumentParser) -> None:
 
 
 def _add_positional(parser: argparse.ArgumentParser) -> None:
+    """Add positional arguments to the parser.
+
+    Args:
+        parser: Argument parser to add positional arguments to
+    """
     parser.add_argument(
         "files",
         nargs="*",
