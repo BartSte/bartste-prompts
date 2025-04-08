@@ -11,13 +11,17 @@ from prompts import _prompts
 @dataclass
 class Prompt:
     """Represents a complete prompt composed of command and filetype components."""
+
     command: str
+    files: str = ""
     filetype: str = ""
 
-    TEMPLATE: str = "{command}\n{filetype}"
+    TEMPLATE: str = "{files}\n{command}\n{filetype}"
 
     @classmethod
-    def create(cls, command: str, filetype: str = "") -> Self:
+    def create(
+        cls, command: str, files: set[str] | None = None, filetype: str = ""
+    ) -> Self:
         """Create a Prompt instance from command and filetype markdown files.
 
         Args:
@@ -27,17 +31,19 @@ class Prompt:
         Returns:
             Prompt instance with loaded content
         """
-        path_command: str = _join_prompts("command", f"{command}.md")
-        path_filetype: str = _join_prompts("filetype", f"{filetype}.md")
-        logging.info(
-            "Prompt paths: command=%s, filetype=%s",
-            path_command,
-            path_filetype,
-        )
-        prompt_command: str = _read(path_command)
-        prompt_filetype: str = _read(path_filetype)
-
-        return cls(command=prompt_command, filetype=prompt_filetype)
+        files = files or set()
+        paths: dict[str, str] = {
+            "files": _join_prompts("files.md") if files else "",
+            "command": _join_prompts("command", f"{command}.md"),
+            "filetype": _join_prompts("filetype", f"{filetype}.md"),
+        }
+        logging.info("Processing prompts at paths: %s", paths)
+        files_str: str = ", ".join(files)
+        kwargs = {
+            key: _read(path).format(files=files_str)
+            for key, path in paths.items()
+        }
+        return cls(**kwargs)
 
     def __str__(self) -> str:
         """Format the prompt components into a single string.
@@ -46,7 +52,7 @@ class Prompt:
             Combined prompt string using the class template
         """
         return self.TEMPLATE.format(
-            command=self.command, filetype=self.filetype
+            command=self.command, filetype=self.filetype, files=self.files
         )
 
 
@@ -79,7 +85,7 @@ def _read(path: str) -> str:
     Returns:
         File contents as string, or empty string if file not found
     """
-    if not exists(path):
+    if not path or not exists(path):
         return ""
 
     with open(path, "r", encoding="utf-8") as file:
