@@ -52,7 +52,9 @@ def make_prompt(
     kwargs = {
         key: _read(path).format(files=files_str) for key, path in paths.items()
     }
-    return Prompt(**kwargs)
+    prompt = Prompt(**kwargs)
+    logging.info("The prompts is: %s", prompt)
+    return prompt
 
 
 def _join_prompts(*args: str) -> str:

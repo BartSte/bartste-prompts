@@ -5,7 +5,8 @@ stubbing where needed. Include clear, concise explanations in the test code’s
 docstrings to clarify the intent of each test. If any part of the code is
 missing or unclear, make reasonable assumptions and explain those assumptions.
 
-Place these tests in a separate file, following typical conventions:
+Place these tests in another file than the source files, following these
+conventions:
 
 - The file holding the unittests is named `test_<original_file_name>.<ext>` (for
   example, if the source file is `file.abc`, the test file should be named
