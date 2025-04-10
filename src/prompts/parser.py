@@ -104,6 +104,14 @@ def _add_positional(parser: argparse.ArgumentParser) -> None:
 
 
 def _func(args: argparse.Namespace) -> str:
+    """Determines and returns the prompt string based on parsed arguments.
+
+    Args:
+        args: Parsed command-line arguments.
+
+    Returns:
+        A string representation of the generated prompt.
+    """
     kwargs = dict(
         command=args.command,
         filetype=args.filetype,
