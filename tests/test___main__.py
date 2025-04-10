@@ -15,16 +15,15 @@ class TestMainIntegration(unittest.TestCase):
     """
 
     def setUp(self) -> None:
-        # Patch the _read function in promptmaker to return a fixed string.
+        """Set up test environment by patching promptmaker._read."""
         import prompts.promptmaker as pm
-
+        self.pm = pm
         self.orig_read = pm._read
         pm._read = lambda path: "Content"
 
     def tearDown(self) -> None:
-        import prompts.promptmaker as pm
-
-        pm._read = self.orig_read
+        """Restore patched promptmaker._read."""
+        self.pm._read = self.orig_read
 
     def test_main_integration_json(self) -> None:
         """Test main() integration when JSON output is requested."""

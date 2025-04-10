@@ -19,7 +19,9 @@ class TestPromptMaker(unittest.TestCase):
         return ""
 
     def setUp(self) -> None:
+        """Set up test environment by patching promptmaker._read."""
         import prompts.promptmaker as pm
+        self.pm = pm
         self.orig_read = pm._read
         pm._read = self.dummy_read
 

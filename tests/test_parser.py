@@ -19,11 +19,14 @@ class TestParser(unittest.TestCase):
         return ""
 
     def setUp(self) -> None:
+        """Set up test environment by patching promptmaker._read."""
+        self.pm = pm
         self.orig_read = pm._read
         pm._read = self.dummy_read
 
     def tearDown(self) -> None:
-        pm._read = self.orig_read
+        """Restore patched promptmaker._read."""
+        self.pm._read = self.orig_read
 
     def test_parser_json_output(self) -> None:
         """Test that parser returns JSON output when --json flag is set."""

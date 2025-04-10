@@ -12,7 +12,7 @@ class TestLogger(unittest.TestCase):
     def test_logger_quiet(self) -> None:
         """Test that logger.setup suppresses logging output when quiet is True."""
         # Clear any existing handlers
-        logging.root.handlers = []
+        logging.getLogger().handlers.clear()
         logger.setup("DEBUG", quiet=True)
         stream = StringIO()
         handler = logging.StreamHandler(stream)
@@ -24,7 +24,7 @@ class TestLogger(unittest.TestCase):
     def test_logger_loglevel(self) -> None:
         """Test that logger.setup sets the correct logging level when quiet is False."""
         # Clear any existing handlers
-        logging.root.handlers = []
+        logging.getLogger().handlers.clear()
         logger.setup("INFO", quiet=False)
         root_logger = logging.getLogger()
         # The logger's effective level should be at least INFO
