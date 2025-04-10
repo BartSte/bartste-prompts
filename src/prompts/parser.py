@@ -1,5 +1,12 @@
 import argparse
 from collections.abc import Mapping
+from os import listdir
+from os.path import isfile, join, splitext
+
+from pygeneral import path
+
+from prompts import _prompts
+from prompts.promptmaker import make_json, make_prompt
 
 """Mapping of available commands to their help text."""
 _COMMANDS: Mapping[str, str] = {
@@ -26,6 +33,7 @@ def setup() -> argparse.ArgumentParser:
         subparser = subparsers.add_parser(cmd, help=help_text)
         _add_options(subparser)
         _add_positional(subparser)
+        subparser.set_defaults(func=_func)
     return parser
 
 
@@ -38,7 +46,12 @@ def _add_options(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "-f",
         "--filetype",
-        help="Specify filetype prompt",
+        default="",
+        choices=_get_file_names(path.module(_prompts.filetype)),
+        help=(
+            "Specify a filetype to add filetype-specific descriptions to the "
+            "prompt"
+        ),
     )
     parser.add_argument(
         "-l",
@@ -53,6 +66,27 @@ def _add_options(parser: argparse.ArgumentParser) -> None:
         action="store_true",
         help="Suppress all output (overrides loglevel)",
     )
+    parser.add_argument(
+        "--json", action="store_true", help="Output result as JSON"
+    )
+
+
+def _get_file_names(directory: str) -> list[str]:
+    """Get a list of file names in the given directory.
+
+    The extension is removed from each file name.
+
+    Args:
+        directory: The directory to search for files.
+
+    Returns:
+        A list of file names with extensions removed.
+    """
+    return [
+        splitext(path)[0]
+        for path in listdir(directory)
+        if isfile(join(directory, path)) and not path.startswith("_")
+    ]
 
 
 def _add_positional(parser: argparse.ArgumentParser) -> None:
@@ -64,5 +98,18 @@ def _add_positional(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "files",
         nargs="*",
+        default=[],
         help="Files to be processed",
     )
+
+
+def _func(args: argparse.Namespace) -> str:
+    kwargs = dict(
+        command=args.command,
+        filetype=args.filetype,
+        files=set(args.files),
+    )
+    if args.json:
+        return make_json(**kwargs)
+    else:
+        return str(make_prompt(**kwargs))

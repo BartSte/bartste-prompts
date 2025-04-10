@@ -1,7 +1,7 @@
+import json
 import logging
 from dataclasses import dataclass
 from os.path import exists, join
-from typing import Self
 
 from pygeneral import path
 
@@ -16,34 +16,7 @@ class Prompt:
     files: str = ""
     filetype: str = ""
 
-    TEMPLATE: str = "{files}\n{command}\n{filetype}"
-
-    @classmethod
-    def create(
-        cls, command: str, files: set[str] | None = None, filetype: str = ""
-    ) -> Self:
-        """Create a Prompt instance from command and filetype markdown files.
-
-        Args:
-            command: Name of the command prompt file (without .md extension)
-            filetype: Name of the filetype prompt file (without .md extension)
-
-        Returns:
-            Prompt instance with loaded content
-        """
-        files = files or set()
-        paths: dict[str, str] = {
-            "files": _join_prompts("files.md") if files else "",
-            "command": _join_prompts("command", f"{command}.md"),
-            "filetype": _join_prompts("filetype", f"{filetype}.md"),
-        }
-        logging.info("Processing prompts at paths: %s", paths)
-        files_str: str = ", ".join(files)
-        kwargs = {
-            key: _read(path).format(files=files_str)
-            for key, path in paths.items()
-        }
-        return cls(**kwargs)
+    _TEMPLATE: str = "{files}\n{command}\n{filetype}"
 
     def __str__(self) -> str:
         """Format the prompt components into a single string.
@@ -51,9 +24,35 @@ class Prompt:
         Returns:
             Combined prompt string using the class template
         """
-        return self.TEMPLATE.format(
+        return self._TEMPLATE.format(
             command=self.command, filetype=self.filetype, files=self.files
         )
+
+
+def make_prompt(
+    command: str, files: set[str] | None = None, filetype: str = ""
+) -> Prompt:
+    """Create a Prompt instance from command and filetype markdown files.
+
+    Args:
+        command: Name of the command prompt file (without .md extension)
+        filetype: Name of the filetype prompt file (without .md extension)
+
+    Returns:
+        Prompt instance with loaded content
+    """
+    files = files or set()
+    paths: dict[str, str] = {
+        "files": _join_prompts("files.md") if files else "",
+        "command": _join_prompts("command", f"{command}.md"),
+        "filetype": _join_prompts("filetype", f"{filetype}.md"),
+    }
+    logging.info("Processing prompts at paths: %s", paths)
+    files_str: str = ", ".join(files)
+    kwargs = {
+        key: _read(path).format(files=files_str) for key, path in paths.items()
+    }
+    return Prompt(**kwargs)
 
 
 def _join_prompts(*args: str) -> str:
@@ -82,3 +81,18 @@ def _read(path: str) -> str:
 
     with open(path, "r", encoding="utf-8") as file:
         return file.read()
+
+
+def make_json(
+    command: str, files: set[str] | None = None, filetype: str = ""
+) -> str:
+    prompt: Prompt = make_prompt(
+        command=command, files=files, filetype=filetype
+    )
+    result: dict[str, str | list[str]] = dict(
+        command=command,
+        files=list(files or []),
+        filetype=filetype,
+        prompt=str(prompt),
+    )
+    return json.dumps(result)

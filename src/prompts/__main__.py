@@ -1,6 +1,6 @@
 import logging
 
-from prompts import logger, parser, promptmaker
+from prompts import logger, parser
 
 
 def main() -> None:
@@ -12,12 +12,7 @@ def main() -> None:
     args = parser.setup().parse_args()
     logger.setup(args.loglevel, args.quiet)
     logging.info("Parsed arguments: %s", vars(args))
-    prompt = promptmaker.Prompt.create(
-        command=args.command,
-        filetype=getattr(args, "filetype", ""),
-        files=set(getattr(args, "files", [])),
-    )
-    print(prompt)
+    print(args.func(args))
 
 
 if __name__ == "__main__":
