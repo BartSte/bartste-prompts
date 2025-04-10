@@ -26,8 +26,8 @@ class TestPromptMaker(unittest.TestCase):
         pm._read = self.dummy_read
 
     def tearDown(self) -> None:
-        import prompts.promptmaker as pm
-        pm._read = self.orig_read
+        """Restore patched promptmaker._read."""
+        self.pm._read = self.orig_read
 
     def test_make_prompt_with_files(self) -> None:
         """Test that make_prompt returns a Prompt instance with correct formatting when files are provided."""
