@@ -1,6 +1,6 @@
 import unittest
 import json
-from prompts.promptmaker import make_prompt, make_json, Prompt
+from prompts._promptmaker import make_prompt, make_json, Prompt
 
 class TestPromptMaker(unittest.TestCase):
     """Unit tests for the promptmaker module.
@@ -20,7 +20,7 @@ class TestPromptMaker(unittest.TestCase):
 
     def setUp(self) -> None:
         """Set up test environment by patching promptmaker._read."""
-        import prompts.promptmaker as pm
+        import prompts._promptmaker as pm
         self.pm = pm
         self.orig_read = pm._read
         pm._read = self.dummy_read

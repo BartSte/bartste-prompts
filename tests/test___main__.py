@@ -16,7 +16,7 @@ class TestMainIntegration(unittest.TestCase):
 
     def setUp(self) -> None:
         """Set up test environment by patching promptmaker._read."""
-        import prompts.promptmaker as pm
+        import prompts._promptmaker as pm
         self.pm = pm
         self.orig_read = pm._read
         pm._read = lambda path: "Content"

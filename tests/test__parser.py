@@ -1,8 +1,8 @@
 import unittest
 import argparse
 import json
-from prompts import parser
-import prompts.promptmaker as pm
+from prompts import _parser
+import prompts._promptmaker as pm
 
 class TestParser(unittest.TestCase):
     """Unit tests for the parser module.
@@ -32,7 +32,7 @@ class TestParser(unittest.TestCase):
         """Test that parser returns JSON output when --json flag is set."""
         # Construct dummy argparse.Namespace similar to what parser.setup() would provide
         args = argparse.Namespace(command="refactor", filetype="python", files=["a.py", "b.py"], json=True)
-        output = parser._func(args)
+        output = _parser._func(args)
         result = json.loads(output)
         self.assertEqual(result["command"], "refactor")
         self.assertEqual(set(result["files"]), {"a.py", "b.py"})
@@ -42,7 +42,7 @@ class TestParser(unittest.TestCase):
     def test_parser_string_output(self) -> None:
         """Test that parser returns string prompt output when --json flag is not set."""
         args = argparse.Namespace(command="fix", filetype="python", files=["a.py"], json=False)
-        output = parser._func(args)
+        output = _parser._func(args)
         self.assertIsInstance(output, str)
         self.assertIn("Command Prompt", output)
 

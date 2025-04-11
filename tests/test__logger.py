@@ -1,7 +1,7 @@
 import unittest
 import logging
 from io import StringIO
-from prompts import logger
+from prompts import _logger
 
 class TestLogger(unittest.TestCase):
     """Unit tests for the logger module.
@@ -13,7 +13,7 @@ class TestLogger(unittest.TestCase):
         """Test that logger.setup suppresses logging output when quiet is True."""
         # Clear any existing handlers
         logging.getLogger().handlers.clear()
-        logger.setup("DEBUG", quiet=True)
+        _logger.setup("DEBUG", quiet=True)
         stream = StringIO()
         handler = logging.StreamHandler(stream)
         logging.root.addHandler(handler)
@@ -25,7 +25,7 @@ class TestLogger(unittest.TestCase):
         """Test that logger.setup sets the correct logging level when quiet is False."""
         # Clear any existing handlers
         logging.getLogger().handlers.clear()
-        logger.setup("INFO", quiet=False)
+        _logger.setup("INFO", quiet=False)
         root_logger = logging.getLogger()
         # The logger's effective level should be at least INFO
         self.assertGreaterEqual(root_logger.level, logging.INFO)
