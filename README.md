@@ -11,6 +11,18 @@ This tool integrates commands for:
 - **fix**: Fix issues in the code.
 - **unittests**: Generate unit tests for your code.
 
+## Installation
+
+Ensure you have Python 3.7+ installed. To install bartste-prompts, you can either:
+- Install via pip:
+```bash
+pip install bartste-prompts
+```
+- Or clone the repository and install in editable mode:
+```bash
+pip install -e .
+```
+
 ## Usage
 
 Run the tool via command line:
