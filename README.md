@@ -43,6 +43,14 @@ Example:
 prompts refactor -f python myfile.py
 ```
 
+Additionally, a dedicated command for AI assistance is available via the `prompts-aider` function. Run the command:
+
+```bash
+prompts-aider
+```
+
+This command bypasses the prompt display and directly executes the AI-assisted command runner.
+
 ## Features
 
 - Constructs prompt strings in `promptmaker.py` using content from markdown files.
