@@ -20,6 +20,3 @@ class TestRunner(unittest.TestCase):
             sys.stdout = original_stdout
         output = captured_output.getvalue().strip()
         self.assertIn("hello", output)
-
-if __name__ == "__main__":
-    unittest.main()

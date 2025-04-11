@@ -1,14 +1,16 @@
 import io
 import sys
 import unittest
+
 from prompts import __main__
+
 
 class TestMain(unittest.TestCase):
     """Unit tests for the entry point in prompts/__main__.py."""
 
     def test_main_function_with_minimal_args(self) -> None:
         """Test that __main__.main() executes without error when passing a valid command.
-        
+
         This test simulates command-line arguments.
         """
         original_argv = sys.argv
@@ -28,6 +30,3 @@ class TestMain(unittest.TestCase):
         # We accept both non-empty or empty output because the prompt may be empty when no files are provided.
         output = captured_output.getvalue()
         self.assertTrue(isinstance(output, str))
-
-if __name__ == "__main__":
-    unittest.main()

@@ -21,6 +21,3 @@ class TestParser(unittest.TestCase):
         parser = _parser.setup()
         args = parser.parse_args(["refactor"])
         self.assertEqual(args.tool, "print")
-
-if __name__ == "__main__":
-    unittest.main()

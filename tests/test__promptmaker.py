@@ -1,18 +1,21 @@
 import unittest
+from ntpath import basename
+
+import prompts._promptmaker as pm
 from prompts._promptmaker import make_prompt
+
 
 class TestPromptMaker(unittest.TestCase):
     """Unit tests for functions in prompts/_promptmaker.py."""
 
     def setUp(self) -> None:
         """Monkey-patch _read function to return predictable content for testing."""
-        import prompts._promptmaker as pm
+
         self.original_read = pm._read
-        pm._read = lambda p: f"Content of {p}: {{files}}"
+        pm._read = lambda p: f"Content of {basename(p)}: {{files}}"
 
     def tearDown(self) -> None:
         """Restore the original _read function."""
-        import prompts._promptmaker as pm
         pm._read = self.original_read
 
     def test_make_prompt_with_files_and_filetype(self) -> None:
@@ -21,8 +24,8 @@ class TestPromptMaker(unittest.TestCase):
         # Check that the returned prompt string contains expected parts.
         prompt_str = str(prompt)
         self.assertIn("Content of files.md:", prompt_str)
-        self.assertIn("Content of command/command.md:", prompt_str)
-        self.assertIn("Content of filetype/filetype.md:", prompt_str)
+        self.assertIn("Content of command.md:", prompt_str)
+        self.assertIn("Content of filetype.md:", prompt_str)
         # Check that the files are substituted in at least one section.
         self.assertIn("file1.py", prompt_str)
         self.assertIn("file2.py", prompt_str)
@@ -32,6 +35,3 @@ class TestPromptMaker(unittest.TestCase):
         prompt = make_prompt("command", None, "")
         prompt_str = str(prompt)
         self.assertIn("Content of", prompt_str)
-
-if __name__ == "__main__":
-    unittest.main()
