@@ -5,6 +5,7 @@ A command-line tool to generate AI prompts for code modifications.
 ## Overview
 
 This tool integrates commands for:
+
 - **docstrings**: Add Google-style docstrings.
 - **typehints**: Enhance code with proper type hints.
 - **refactor**: Refactor code following best practices.
@@ -14,13 +15,17 @@ This tool integrates commands for:
 ## Installation
 
 Ensure you have Python 3.7+ installed. To install bartste-prompts, you can either:
+
 - Install via pip:
+
 ```bash
-pip install bartste-prompts
+pip install git+https://github.com/bartste/bartste-prompts.git
 ```
-- Or clone the repository and install in editable mode:
+
+- Or clone the repository and install it directly:
+
 ```bash
-pip install -e .
+pip install .
 ```
 
 ## Usage
@@ -49,7 +54,7 @@ Additionally, a dedicated command for AI assistance is available via the `prompt
 prompts-aider
 ```
 
-This command bypasses the prompt display and directly executes the AI-assisted command runner.
+This command passes the prompt directly to [aider](https://github.com/paul-gauthier/aider). Ensure the `aider` CLI is installed and accessible in your PATH.
 
 ## Features
 
@@ -64,7 +69,7 @@ This command bypasses the prompt display and directly executes the AI-assisted c
 - **src/prompts/promptmaker.py**: Generates combined prompt strings.
 - **src/prompts/parser.py**: Handles CLI argument parsing.
 - **src/prompts/logger.py**: Manages logging configuration.
-- **src/prompts/__main__.py**: Acts as the entry point.
+- **src/prompts/**main**.py**: Acts as the entry point.
 
 ## License
 
