@@ -83,18 +83,3 @@ def _read(path: str) -> str:
 
     with open(path, "r", encoding="utf-8") as file:
         return file.read()
-
-
-def make_json(
-    command: str, files: set[str] | None = None, filetype: str = ""
-) -> str:
-    prompt: Prompt = make_prompt(
-        command=command, files=files, filetype=filetype
-    )
-    result: dict[str, str | list[str]] = dict(
-        command=command,
-        files=list(files or []),
-        filetype=filetype,
-        prompt=str(prompt),
-    )
-    return json.dumps(result)

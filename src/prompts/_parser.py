@@ -6,7 +6,8 @@ from os.path import isfile, join, splitext
 from pygeneral import path
 
 from prompts import _prompts
-from prompts._promptmaker import make_json, make_prompt
+from prompts._promptmaker import Prompt, make_prompt
+from prompts._tools import AbstractTool, ToolsFactory
 
 """Mapping of available commands to their help text."""
 _COMMANDS: Mapping[str, str] = {
@@ -67,7 +68,10 @@ def _add_options(parser: argparse.ArgumentParser) -> None:
         help="Suppress all output (overrides loglevel)",
     )
     parser.add_argument(
-        "--json", action="store_true", help="Output result as JSON"
+        "--tool",
+        choices=ToolsFactory.names(),
+        default="print",
+        help="Apply the generated prompt to a tool.",
     )
 
 
@@ -103,7 +107,7 @@ def _add_positional(parser: argparse.ArgumentParser) -> None:
     )
 
 
-def _func(args: argparse.Namespace) -> str:
+def _func(args: argparse.Namespace):
     """Determines and returns the prompt string based on parsed arguments.
 
     Args:
@@ -112,12 +116,12 @@ def _func(args: argparse.Namespace) -> str:
     Returns:
         A string representation of the generated prompt.
     """
+    factory: ToolsFactory = ToolsFactory(args.tool)
     kwargs = dict(
         command=args.command,
         filetype=args.filetype,
         files=set(args.files),
     )
-    if args.json:
-        return make_json(**kwargs)
-    else:
-        return str(make_prompt(**kwargs))
+    prompt: Prompt = make_prompt(**kwargs)
+    tool: AbstractTool = factory.create(prompt, **kwargs)
+    tool()

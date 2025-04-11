@@ -22,7 +22,6 @@ dev = [
 
 [project.scripts]
 prompts = "prompts.cli:main"
-prompts-aider = "prompts.cli:aider"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
