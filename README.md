@@ -48,13 +48,13 @@ Example:
 prompts refactor -f python myfile.py
 ```
 
-Additionally, a dedicated command for AI assistance is available via the `prompts-aider` function. Run the command:
+Additionally, the prompt can be redirected to a external tool using the `--tool` option. Currently, `json` and [aider](https://github.com/paul-gauthier/aider) are supported. For example:
 
 ```bash
-prompts-aider
+prompts docstrings --filetype python --tool aider myfile.py
 ```
 
-This command passes the prompt directly to [aider](https://github.com/paul-gauthier/aider). Ensure the `aider` CLI is installed and accessible in your PATH.
+would pass the prompt directly to aider, adding docstrings to `myfile.py`.
 
 ## Features
 

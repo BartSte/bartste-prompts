@@ -6,7 +6,7 @@ authors = [
     {name = "BartSte" },
 ]
 readme = "README.md"
-requires-python = "<3.13"
+requires-python = "<=3.13"
 license = {text = "MIT"}
 dependencies = [
     "pygeneral"
@@ -21,7 +21,7 @@ dev = [
 ]
 
 [project.scripts]
-prompts = "prompts.cli:main"
+prompts = "prompts.__main__:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
