@@ -14,11 +14,22 @@ class CommandRunner:
     strategy: Strategy | None
 
     def __init__(self, prompt: Prompt, files: set[str] | None = None):
+        """Initialize a CommandRunner instance.
+
+        Args:
+            prompt: The prompt instance to be processed.
+            files: Set of files associated with the prompt.
+        """
         self.prompt = prompt
         self.files = files or set()
         self.strategy = None
 
     def run(self) -> None:
+        """Execute the command using the specified strategy.
+
+        Raises:
+            ValueError: If no strategy is provided.
+        """
         if not self.strategy:
             raise ValueError("No strategy provided")
 
@@ -41,6 +52,11 @@ class CommandRunner:
         stderr_reader.join()
 
     def stream_reader(self, pipe: IO[bytes]) -> None:
+        """Read and print lines from the given byte pipe.
+
+        Args:
+            pipe: A byte stream from the subprocess output.
+        """
         for line in iter(pipe.readline, b""):
             print(line.decode().rstrip())
 
@@ -48,4 +64,13 @@ class CommandRunner:
 class Strategies:
     @staticmethod
     def aider(prompt: Prompt, files: set[str]) -> list[str]:
+        """Construct command arguments using the aider strategy.
+        
+        Args:
+            prompt: The prompt instance containing the generated prompt.
+            files: Set of files to process.
+        
+        Returns:
+            A list of command arguments to be executed.
+        """
         return ["aider", "--yes-always", "--message", str(prompt), *files]

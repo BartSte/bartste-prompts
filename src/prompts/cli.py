@@ -15,6 +15,11 @@ def main() -> None:
 
 
 def aider() -> None:
+    """Generate a prompt and run the command using the aider strategy.
+
+    Parses command-line arguments, sets up logging, generates a prompt, and executes the
+    command runner configured with the aider strategy.
+    """
     args = _parser.setup().parse_args()
     _logger.setup(args.loglevel, args.quiet)
     prompt: Prompt = args.func(args)

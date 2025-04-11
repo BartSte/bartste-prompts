@@ -1,3 +1,4 @@
+"""Logger configuration for the prompts package."""
 import logging
 
 
