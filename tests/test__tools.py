@@ -3,8 +3,8 @@ import json
 import sys
 import unittest
 
-from prompts._promptmaker import Prompt
-from prompts._tools import Aider, Json, Print
+from prompts.actions import Json, Print
+from prompts.promptmaker import Prompt
 
 
 class DummyPrompt(Prompt):
@@ -51,4 +51,3 @@ class TestTools(unittest.TestCase):
         self.assertEqual(set(result.get("files", [])), self.files)
         self.assertEqual(result.get("filetype"), "ft")
         self.assertEqual(result.get("prompt"), "dummy prompt")
-

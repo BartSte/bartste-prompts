@@ -2,12 +2,17 @@ import argparse
 from collections.abc import Mapping
 from os import listdir
 from os.path import isfile, join, splitext
+from typing import TYPE_CHECKING
 
 from pygeneral import path
 
-from prompts import _prompts
-from prompts._promptmaker import Prompt, make_prompt
-from prompts._tools import AbstractTool, ToolsFactory
+from prompts import _text
+from prompts.actions import ActionFactory
+from prompts.promptmaker import make_prompt
+
+if TYPE_CHECKING:
+    from prompts.actions import AbstractAction
+    from prompts.promptmaker import Prompt
 
 """Mapping of available commands to their help text."""
 _COMMANDS: Mapping[str, str] = {
@@ -48,7 +53,7 @@ def _add_options(parser: argparse.ArgumentParser) -> None:
         "-f",
         "--filetype",
         default="",
-        choices=_get_file_names(path.module(_prompts.filetype)),
+        choices=_get_file_names(path.module(_text.filetype)),
         help=(
             "Specify a filetype to add filetype-specific descriptions to the "
             "prompt"
@@ -69,7 +74,7 @@ def _add_options(parser: argparse.ArgumentParser) -> None:
     )
     parser.add_argument(
         "--tool",
-        choices=ToolsFactory.names(),
+        choices=ActionFactory.names(),
         default="print",
         help="Apply the generated prompt to a tool.",
     )
@@ -116,12 +121,12 @@ def _func(args: argparse.Namespace):
     Returns:
         A string representation of the generated prompt.
     """
-    factory: ToolsFactory = ToolsFactory(args.tool)
+    factory: ActionFactory = ActionFactory(args.tool)
     kwargs = dict(
         command=args.command,
         filetype=args.filetype,
         files=set(args.files),
     )
-    prompt: Prompt = make_prompt(**kwargs)
-    tool: AbstractTool = factory.create(prompt, **kwargs)
-    tool()
+    prompt: "Prompt" = make_prompt(**kwargs)
+    action: "AbstractAction" = factory.create(prompt, **kwargs)
+    action()

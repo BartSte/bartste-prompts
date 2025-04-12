@@ -26,7 +26,7 @@ prompts = "prompts.__main__:main"
 [tool.setuptools]
 package-dir = {"" = "src"}
 packages = ["prompts"]
-package-data = {"prompts" = ["_prompts/**/*.md"]}
+package-data = {"prompts" = ["_text/**/*.md"]}
 
 [tool.ruff]
 line-length = 79

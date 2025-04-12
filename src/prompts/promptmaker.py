@@ -1,11 +1,10 @@
-import json
 import logging
 from dataclasses import dataclass
 from os.path import exists, join
 
 from pygeneral import path
 
-from prompts import _prompts
+from prompts import _text
 
 
 @dataclass
@@ -43,9 +42,9 @@ def make_prompt(
     """
     files = files or set()
     paths: dict[str, str] = {
-        "files": _join_prompts("files.md") if files else "",
-        "command": _join_prompts("command", f"{command}.md"),
-        "filetype": _join_prompts("filetype", f"{filetype}.md"),
+        "files": _join_text("files.md") if files else "",
+        "command": _join_text("command", f"{command}.md"),
+        "filetype": _join_text("filetype", f"{filetype}.md"),
     }
     logging.info("Processing prompts at paths: %s", paths)
     files_str: str = ", ".join(files)
@@ -57,7 +56,7 @@ def make_prompt(
     return prompt
 
 
-def _join_prompts(*args: str) -> str:
+def _join_text(*args: str) -> str:
     """Join prompt file segments to form a full prompt path.
 
     Args:
@@ -66,7 +65,7 @@ def _join_prompts(*args: str) -> str:
     Returns:
         The joined path to the prompt file.
     """
-    return join(path.module(_prompts), *args)
+    return join(path.module(_text), *args)
 
 
 def _read(path: str) -> str:

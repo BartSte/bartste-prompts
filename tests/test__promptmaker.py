@@ -1,8 +1,8 @@
 import unittest
 from ntpath import basename
 
-import prompts._promptmaker as pm
-from prompts._promptmaker import make_prompt
+import prompts.promptmaker as pm
+from prompts.promptmaker import make_prompt
 
 
 class TestPromptMaker(unittest.TestCase):

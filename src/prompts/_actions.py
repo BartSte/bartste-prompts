@@ -2,11 +2,11 @@ import json
 from abc import ABC, abstractmethod
 from typing import override
 
-from prompts._promptmaker import Prompt
+from prompts.promptmaker import Prompt
 from prompts._runner import run_command
 
 
-class AbstractTool(ABC):
+class AbstractAction(ABC):
     """Abstract base class for tools.
 
     Attributes:
@@ -15,6 +15,7 @@ class AbstractTool(ABC):
         filetype (str): The file type.
         command (str): The command name.
     """
+
     prompt: Prompt
     files: set[str]
     filetype: str
@@ -32,20 +33,19 @@ class AbstractTool(ABC):
     @abstractmethod
     def __call__(self):
         """Execute the tool's action."""
-        pass
 
 
-class Print(AbstractTool):
+class Print(AbstractAction):
     @override
     def __call__(self):
         """Print the prompt to stdout."""
         print(self.prompt)
 
 
-class Json(AbstractTool):
+class Json(AbstractAction):
     @override
     def __call__(self):
-        """Print the tool details as a JSON string."""
+        """Print the prompt as a json string to stdout."""
         result: dict[str, str | list[str]] = dict(
             command=self.command,
             files=list(self.files),
@@ -55,7 +55,7 @@ class Json(AbstractTool):
         print(json.dumps(result))
 
 
-class Aider(AbstractTool):
+class Aider(AbstractAction):
     @override
     def __call__(self):
         """Execute the aider command with the prompt and files."""
@@ -69,14 +69,15 @@ class Aider(AbstractTool):
         run_command(cmd)
 
 
-class ToolsFactory:
+class ActionFactory:
     """Factory class to create tool instances based on a tool name.
 
     Attributes:
         name (str): The name of the tool.
     """
+
     name: str
-    _cls: type[AbstractTool]
+    _cls: type[AbstractAction]
 
     def __init__(self, name: str):
         """Initialize the ToolsFactory with the given tool name.
@@ -85,13 +86,13 @@ class ToolsFactory:
             ValueError: If no tool is available for the provided name.
         """
         self.name = name
-        tools: dict[str, type[AbstractTool]] = self.all()
+        tools: dict[str, type[AbstractAction]] = self.all()
         try:
             self._cls = tools[name]
         except KeyError:
             raise ValueError(f"No tool available named '{name}'")
 
-    def create(self, *args, **kwargs) -> AbstractTool:
+    def create(self, *args, **kwargs) -> AbstractAction:
         """Create an instance of the specified tool with provided arguments.
 
         Returns:
@@ -100,14 +101,15 @@ class ToolsFactory:
         return self._cls(*args, **kwargs)
 
     @classmethod
-    def all(cls) -> dict[str, type[AbstractTool]]:
+    def all(cls) -> dict[str, type[AbstractAction]]:
         """Return a mapping from tool names to tool classes.
 
         Returns:
             dict[str, type[AbstractTool]]: Dictionary mapping lowercase class names to the tool classes.
         """
         return {
-            cls.__name__.lower(): cls for cls in AbstractTool.__subclasses__()
+            cls.__name__.lower(): cls
+            for cls in AbstractAction.__subclasses__()
         }
 
     @classmethod
