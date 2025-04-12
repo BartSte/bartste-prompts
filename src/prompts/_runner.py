@@ -1,3 +1,4 @@
+import logging
 import subprocess
 from threading import Thread
 from typing import IO
@@ -18,7 +19,7 @@ def run_command(cmd: list[str]) -> None:
         target=_stream_reader, args=(process.stdout,)
     )
     stderr_reader: Thread = Thread(
-        target=_stream_reader, args=(process.stderr,)
+        target=_stream_reader, args=(process.stderr, logging.ERROR)
     )
     stdout_reader.start()
     stderr_reader.start()
@@ -27,11 +28,12 @@ def run_command(cmd: list[str]) -> None:
     stderr_reader.join()
 
 
-def _stream_reader(pipe: IO[bytes]) -> None:
-    """Read and print lines from the given byte pipe.
+def _stream_reader(pipe: IO[bytes], level: int = logging.INFO) -> None:
+    """Read and log lines from a subprocess pipe stream.
 
     Args:
-        pipe: A byte stream from the subprocess output.
+        pipe: Byte stream from subprocess output (stdout/stderr)
+        level: Logging level to use for messages (default: INFO)
     """
     for line in iter(pipe.readline, b""):
-        print(line.decode().rstrip())
+        logging.log(level, line.decode().rstrip())

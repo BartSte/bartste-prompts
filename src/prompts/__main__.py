@@ -10,7 +10,7 @@ def main() -> None:
     and executes the function specified by the arguments.
     """
     args = _parser.setup().parse_args()
-    _logger.setup(args.loglevel, args.quiet)
+    _logger.setup(args.loglevel)
     args.func(args)
 
 

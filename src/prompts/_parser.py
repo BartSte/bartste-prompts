@@ -67,12 +67,6 @@ def _add_options(parser: argparse.ArgumentParser) -> None:
         help="Set the logging level",
     )
     parser.add_argument(
-        "-q",
-        "--quiet",
-        action="store_true",
-        help="Suppress all output (overrides loglevel)",
-    )
-    parser.add_argument(
         "-a",
         "--action",
         choices=ActionFactory.names(),
