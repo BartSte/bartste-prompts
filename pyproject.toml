@@ -19,6 +19,9 @@ dev = [
     "ipython"
 ]
 
+[project.scripts]
+prompts = "prompts.__main__:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 exclude = ["tests", "__pycache__"]
