@@ -19,13 +19,12 @@ dev = [
     "ipython"
 ]
 
-[project.scripts]
-prompts = "prompts.__main__:main"
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["tests", "__pycache__"]
 
-[tool.setuptools]
-package-dir = {"" = "src"}
-packages = ["prompts"]
-package-data = {"prompts" = ["_text/*.md", "_text/**/*.md"]}
+[tool.setuptools.package-data]
+prompts = ["_text/*.md", "_text/**/*.md"]
 
 [tool.ruff]
 line-length = 79
