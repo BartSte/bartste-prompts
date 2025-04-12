@@ -65,6 +65,7 @@ class Aider(AbstractAction):
             "aider",
             "--yes-always",
             "--no-check-update",
+            "--no-suggest-shell-commands",
             "--message",
             str(self.prompt),
             *self.files,
