@@ -73,7 +73,8 @@ def _add_options(parser: argparse.ArgumentParser) -> None:
         help="Suppress all output (overrides loglevel)",
     )
     parser.add_argument(
-        "--tool",
+        "-a",
+        "--action",
         choices=ActionFactory.names(),
         default="print",
         help="Apply the generated prompt to a tool.",

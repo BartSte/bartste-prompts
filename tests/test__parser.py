@@ -17,7 +17,7 @@ class TestParser(unittest.TestCase):
         self.assertEqual(args.command, "docstrings")
 
     def test_tool_option_defaults(self) -> None:
-        """Test that the '--tool' option defaults to 'print'."""
+        """Test that the '--action' option defaults to 'print'."""
         parser = _parser.setup()
         args = parser.parse_args(["refactor"])
         self.assertEqual(args.tool, "print")

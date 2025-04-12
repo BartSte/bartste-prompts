@@ -4,13 +4,16 @@ A command-line tool to generate AI prompts for code modifications.
 
 ## Overview
 
-This tool integrates commands for:
+This tool generates prompts for:
 
 - **docstrings**: Add Google-style docstrings.
 - **typehints**: Enhance code with proper type hints.
 - **refactor**: Refactor code following best practices.
 - **fix**: Fix issues in the code.
 - **unittests**: Generate unit tests for your code.
+
+The prompts can be passed directly to external tools such as `aider` to executed
+them using an LLM.
 
 ## Installation
 
@@ -48,29 +51,18 @@ Example:
 prompts refactor -f python myfile.py
 ```
 
-Additionally, the prompt can be redirected to a external tool using the `--tool` option. Currently, `json` and [aider](https://github.com/paul-gauthier/aider) are supported. For example:
+Additionally, the prompt can be redirected to an external tool using the `--action` option. Currently, `json` and [aider](https://github.com/paul-gauthier/aider) are supported. For example:
 
 ```bash
-prompts docstrings --filetype python --tool aider myfile.py
+prompts docstrings --filetype python --action aider myfile.py
 ```
 
 would pass the prompt directly to aider, adding docstrings to `myfile.py`.
 
-## Features
+## Contributing
 
-- Constructs prompt strings in `promptmaker.py` using content from markdown files.
-- Offers output as either a formatted string or JSON via the `--json` flag.
-- Leverages command definitions and file type selections from CLI arguments in `parser.py`.
-- Configures application logging using `logger.py`.
-- Entry point provided by `src/prompts/__main__.py`.
-
-## Code Structure
-
-- **src/prompts/promptmaker.py**: Generates combined prompt strings.
-- **src/prompts/parser.py**: Handles CLI argument parsing.
-- **src/prompts/logger.py**: Manages logging configuration.
-- **src/prompts/**main**.py**: Acts as the entry point.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on contributing.
 
 ## License
 
-Licensed under the MIT License – see the LICENSE file for details.
+See [LICENSE](LICENSE) for licensing details.
