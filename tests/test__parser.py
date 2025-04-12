@@ -20,4 +20,4 @@ class TestParser(unittest.TestCase):
         """Test that the '--action' option defaults to 'print'."""
         parser = _parser.setup()
         args = parser.parse_args(["refactor"])
-        self.assertEqual(args.tool, "print")
+        self.assertEqual(args.action, "print")
