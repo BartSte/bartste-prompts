@@ -122,7 +122,7 @@ def _func(args: argparse.Namespace):
     Returns:
         A string representation of the generated prompt.
     """
-    factory: ActionFactory = ActionFactory(args.tool)
+    factory: ActionFactory = ActionFactory(args.action)
     kwargs = dict(
         command=args.command,
         filetype=args.filetype,
