@@ -17,7 +17,7 @@ them using an LLM.
 
 ## Installation
 
-Ensure you have Python 3.7+ installed. To install bartste-prompts, you can either:
+To install `bartste-prompts`, you can either:
 
 - Install via pip:
 
@@ -33,31 +33,27 @@ pip install .
 
 ## Usage
 
-Run the tool via command line:
+Run the following to get info about the cli:
 
 ```bash
-prompts
+prompts --help
 ```
 
-Or explicitly:
+### Examples
 
-```bash
-prompts [command] [options] [files...]
-```
+- Generate a prompt that describes a refactor the `myfile.py` file.
 
-Example:
+  ```bash
+  prompts refactor -f python myfile.py
+  ```
 
-```bash
-prompts refactor -f python myfile.py
-```
+- Send a prompt for writing docstrings to [aider](https://github.com/paul-gauthier/aider).
 
-Additionally, the prompt can be redirected to an external tool using the `--action` option. Currently, `json` and [aider](https://github.com/paul-gauthier/aider) are supported. For example:
+  ```bash
+  prompts docstrings --filetype python --action aider myfile.py
+  ```
 
-```bash
-prompts docstrings --filetype python --action aider myfile.py
-```
-
-would pass the prompt directly to aider, adding docstrings to `myfile.py`.
+  As is shown, a prompt can be redirected to an external tool using the `--action` option. Currently, `json` and [aider](https://github.com/paul-gauthier/aider) are supported.
 
 ## Contributing
 
