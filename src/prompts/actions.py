@@ -64,6 +64,7 @@ class Aider(AbstractAction):
         cmd: list[str] = [
             "aider",
             "--yes-always",
+            "--no-check-update",
             "--message",
             str(self.prompt),
             *self.files,
