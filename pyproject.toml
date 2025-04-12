@@ -6,7 +6,6 @@ authors = [
     {name = "BartSte" },
 ]
 readme = "README.md"
-requires-python = "<=3.13"
 license = {text = "MIT"}
 dependencies = [
     "pygeneral"
@@ -26,7 +25,7 @@ prompts = "prompts.__main__:main"
 [tool.setuptools]
 package-dir = {"" = "src"}
 packages = ["prompts"]
-package-data = {"prompts" = ["_text/**/*.md"]}
+package-data = {"prompts" = ["_text/*.md", "_text/**/*.md"]}
 
 [tool.ruff]
 line-length = 79
