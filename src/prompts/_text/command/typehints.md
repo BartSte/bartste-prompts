@@ -1,3 +1,5 @@
+## Command: refactor
+
 Please add appropriate type hints to all functions, methods and variables.
 Follow standard type hinting conventions for each language.
 

@@ -1,3 +1,5 @@
+## Command: fix
+
 Please analyze and fix all bugs in these files.
 
 This includes:

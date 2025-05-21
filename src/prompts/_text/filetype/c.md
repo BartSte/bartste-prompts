@@ -1,3 +1,5 @@
+## Filetype: C
+
 When writing C code, you MUST follow these principles:
 
 - Use ANSI C standard libraries unless specific platform features are required

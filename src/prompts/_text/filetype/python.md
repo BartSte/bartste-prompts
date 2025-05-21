@@ -1,3 +1,5 @@
+## Filetype: Python
+
 When writing python code, you also MUST follow these principles:
 
 - Add type hints to where possible. You MUST follow these principles:

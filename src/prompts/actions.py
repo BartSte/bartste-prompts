@@ -22,15 +22,22 @@ class AbstractAction(ABC):
     files: set[str]
     filetype: str
     command: str
+    userprompt: str
 
     def __init__(
-        self, prompt: "Prompt", command: str, files: set[str], filetype: str
+        self,
+        prompt: "Prompt",
+        command: str,
+        files: set[str],
+        filetype: str,
+        userprompt: str,
     ):
         """Initialize the tool with a prompt, command, files, and filetype."""
         self.prompt = prompt
         self.command = command
         self.files = files
         self.filetype = filetype
+        self.userprompt = userprompt
 
     @abstractmethod
     def __call__(self):

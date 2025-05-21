@@ -1,3 +1,5 @@
+## Command: unittests
+
 Your task is to create a thorough set of unit tests that ensure high coverage
 for the provided code. Address both common use cases and edge cases, and
 demonstrate how to handle external dependencies or side effects using mocking or
@@ -13,5 +15,4 @@ conventions:
   `test_file.abc`.)
 - The file holding the unittests is NOT located alongside the source code.
   Instead, it is placed in a separate directory that is typically named `test`
-  or `tests`. Here, the directory structure is typically the same as that in
-  source code but now each file and directory is prefixed with "test\_".
+  or `tests`.

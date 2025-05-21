@@ -1,3 +1,5 @@
+## Command: refactor
+
 Please refactor to follow modern best practices and improve code quality.
 
 Key requirements:

@@ -1,3 +1,5 @@
+## Filetype: Lua
+
 When writing Lua code, you MUST follow these principles:
 
 - Prefer local variables over global ones. Always declare variables with `local` unless there's a specific reason to use globals.

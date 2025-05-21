@@ -1,3 +1,5 @@
+## Filetype: Bash
+
 When writing Bash scripts, you MUST follow these principles:
 
 - Add shebang line: `#!/usr/bin/env bash`

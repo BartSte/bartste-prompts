@@ -14,8 +14,9 @@ class Prompt:
     command: str
     files: str = ""
     filetype: str = ""
+    userprompt: str = ""
 
-    _TEMPLATE: str = "{files}\n{command}\n{filetype}"
+    _TEMPLATE: str = "{files}\n{command}\n{filetype}\n{userprompt}"
 
     def __str__(self) -> str:
         """Format the prompt components into a single string.
@@ -24,12 +25,18 @@ class Prompt:
             Combined prompt string using the class template
         """
         return self._TEMPLATE.format(
-            command=self.command, filetype=self.filetype, files=self.files
+            command=self.command,
+            filetype=self.filetype,
+            files=self.files,
+            userprompt=self.userprompt,
         )
 
 
 def make_prompt(
-    command: str, files: set[str] | None = None, filetype: str = ""
+    command: str,
+    files: set[str] | None = None,
+    filetype: str = "",
+    userprompt: str = "",
 ) -> Prompt:
     """Create a Prompt instance from command and filetype markdown files.
 
@@ -42,14 +49,16 @@ def make_prompt(
     """
     files = files or set()
     paths: dict[str, str] = {
-        "files": _join_text("files.md") if files else "",
         "command": _join_text("command", f"{command}.md"),
+        "files": _join_text("files.md") if files else "",
         "filetype": _join_text("filetype", f"{filetype}.md"),
+        "userprompt": _join_text("userprompt.md" if userprompt else ""),
     }
     logging.info("Processing prompts at paths: %s", paths)
     files_str: str = ", ".join(files)
     kwargs = {
-        key: _read(path).format(files=files_str) for key, path in paths.items()
+        key: _read(path).format(files=files_str, userprompt=userprompt)
+        for key, path in paths.items()
     }
     prompt = Prompt(**kwargs)
     logging.info("The prompts is: %s", prompt)

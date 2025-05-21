@@ -1,3 +1,5 @@
+## Filetype: C++
+
 When writing C++ code, you MUST follow these principles:
 
 - Prefer modern C++ features (C++17/20) where available

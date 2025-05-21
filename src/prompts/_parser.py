@@ -73,6 +73,12 @@ def _add_options(parser: argparse.ArgumentParser) -> None:
         default="print",
         help="Apply the generated prompt to a tool.",
     )
+    parser.add_argument(
+        "-u",
+        "--userprompt",
+        default="",
+        help="User input to be included in the prompt",
+    )
 
 
 def _get_file_names(directory: str) -> list[str]:
@@ -121,6 +127,7 @@ def _func(args: argparse.Namespace):
         command=args.command,
         filetype=args.filetype,
         files=set(args.files),
+        userprompt=args.userprompt,
     )
     prompt: "Prompt" = make_prompt(**kwargs)
     action: "AbstractAction" = factory.create(prompt, **kwargs)

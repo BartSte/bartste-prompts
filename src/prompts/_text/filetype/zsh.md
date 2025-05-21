@@ -1,3 +1,5 @@
+## Filetype: Zsh
+
 When writing Zsh scripts, you MUST follow these principles:
 
 - Add shebang line: `#!/usr/bin/env zsh`
