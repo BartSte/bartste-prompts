@@ -1,6 +1,6 @@
 import logging
 from dataclasses import dataclass
-from os.path import exists, join
+from os.path import exists, isfile, join
 
 from pygeneral import path
 
@@ -86,7 +86,7 @@ def _read(path: str) -> str:
     Returns:
         Contents of the file as a string. Returns empty string if file is not found.
     """
-    if not path or not exists(path):
+    if not path or not isfile(path):
         return ""
 
     with open(path, "r", encoding="utf-8") as file:
