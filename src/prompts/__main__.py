@@ -1,6 +1,6 @@
 """Entry point for the prompt generation CLI."""
 
-from prompts import _logger, _parser
+from prompts import _parser
 
 
 def main() -> None:
@@ -10,7 +10,6 @@ def main() -> None:
     and executes the function specified by the arguments.
     """
     args = _parser.setup().parse_args()
-    _logger.setup(args.loglevel)
     args.func(args)
 
 

@@ -9,6 +9,7 @@ from pygeneral import path
 from prompts import _text
 from prompts.actions import ActionFactory
 from prompts.promptmaker import make_prompt
+from prompts._logger import setup as setup_logger
 
 if TYPE_CHECKING:
     from prompts.actions import AbstractAction
@@ -79,6 +80,11 @@ def _add_options(parser: argparse.ArgumentParser) -> None:
         default="",
         help="User input to be included in the prompt",
     )
+    parser.add_argument(
+        "--logfile",
+        default="~/.local/state/bartste-prompts.log",
+        help="Path to log file",
+    )
 
 
 def _get_file_names(directory: str) -> list[str]:
@@ -122,6 +128,7 @@ def _func(args: argparse.Namespace):
     Returns:
         A string representation of the generated prompt.
     """
+    setup_logger(args.loglevel, args.logfile)
     factory: ActionFactory = ActionFactory(args.action)
     kwargs = dict(
         command=args.command,
