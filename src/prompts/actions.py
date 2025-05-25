@@ -65,9 +65,15 @@ class Json(AbstractAction):
 
 
 class Aider(AbstractAction):
+    question: tuple[str] = ("explain",)
+
     @override
     def __call__(self):
         """Execute the aider command with the prompt and files."""
+        prompt: str = str(self.prompt)
+        if self.command in self.question:
+            prompt = f"/ask {prompt}"
+
         process: Popen[bytes] = Popen(
             [
                 "aider",
@@ -75,7 +81,7 @@ class Aider(AbstractAction):
                 "--no-check-update",
                 "--no-suggest-shell-commands",
                 "--message",
-                str(self.prompt),
+                prompt,
                 *self.files,
             ]
         )

@@ -22,6 +22,7 @@ _COMMANDS: Mapping[str, str] = {
     "refactor": "Refactor code based on best practices",
     "fix": "Fix bugs in the code",
     "unittests": "Generate thorough unit tests for files",
+    "explain": "Explain code to the user",
 }
 
 
