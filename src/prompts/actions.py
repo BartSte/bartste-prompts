@@ -1,8 +1,7 @@
 import json
 from abc import ABC, abstractmethod
+from subprocess import Popen
 from typing import TYPE_CHECKING, override
-
-from prompts._runner import run_command
 
 if TYPE_CHECKING:
     from prompts.promptmaker import Prompt
@@ -69,16 +68,18 @@ class Aider(AbstractAction):
     @override
     def __call__(self):
         """Execute the aider command with the prompt and files."""
-        cmd: list[str] = [
-            "aider",
-            "--yes-always",
-            "--no-check-update",
-            "--no-suggest-shell-commands",
-            "--message",
-            str(self.prompt),
-            *self.files,
-        ]
-        run_command(cmd)
+        process: Popen[bytes] = Popen(
+            [
+                "aider",
+                "--yes-always",
+                "--no-check-update",
+                "--no-suggest-shell-commands",
+                "--message",
+                str(self.prompt),
+                *self.files,
+            ]
+        )
+        process.wait()
 
 
 class ActionFactory:
