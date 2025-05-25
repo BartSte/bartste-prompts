@@ -60,6 +60,7 @@ class Json(AbstractAction):
             files=list(self.files),
             filetype=self.filetype,
             prompt=str(self.prompt),
+            userprompt=self.userprompt,
         )
         print(json.dumps(result))
 

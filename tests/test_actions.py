@@ -1,5 +1,6 @@
 import io
 import json
+import logging
 import sys
 import unittest
 
@@ -28,7 +29,7 @@ class TestTools(unittest.TestCase):
         original_stdout = sys.stdout
         sys.stdout = captured_output
         try:
-            tool = Print(self.prompt, "cmd", self.files, "ft")
+            tool = Print(self.prompt, "cmd", self.files, "ft", "user prompt")
             tool()
         finally:
             sys.stdout = original_stdout
@@ -40,14 +41,16 @@ class TestTools(unittest.TestCase):
         original_stdout = sys.stdout
         sys.stdout = captured_output
         try:
-            tool = Json(self.prompt, "cmd", self.files, "ft")
+            tool = Json(self.prompt, "cmd", self.files, "ft", "user prompt")
             tool()
         finally:
             sys.stdout = original_stdout
         result: dict[str, str | list[str]] = json.loads(
             captured_output.getvalue()
         )
+        logging.debug("result = %s", result)
         self.assertEqual(result.get("command"), "cmd")
         self.assertEqual(set(result.get("files", [])), self.files)
         self.assertEqual(result.get("filetype"), "ft")
         self.assertEqual(result.get("prompt"), "dummy prompt")
+        self.assertEqual(result.get("userprompt"), "user prompt")
