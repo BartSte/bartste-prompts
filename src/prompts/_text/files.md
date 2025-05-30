@@ -1,4 +1,4 @@
-## Files to edit
+## Files to consider
 
 You MUST only consider the following file(s):
 
