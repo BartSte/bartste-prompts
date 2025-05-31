@@ -11,6 +11,7 @@ This tool generates prompts for:
 - **refactor**: Refactor code following best practices.
 - **fix**: Fix issues in the code.
 - **unittests**: Generate unit tests for your code.
+- **explain**: Provide explanations for your code.
 
 The prompts can be passed directly to external tools such as `aider` to executed
 them using an LLM.
@@ -54,6 +55,19 @@ prompts --help
   ```
 
   As is shown, a prompt can be redirected to an external tool using the `--action` option. Currently, `json` and [aider](https://github.com/paul-gauthier/aider) are supported.
+
+## Development
+
+The following is important for those who want to develop the code further:
+
+- The markdown files in `./src/prompts/_text` store the prompts. They are
+  formatted by python's `str.format` with the following args:
+
+  - `files`: Passed filenames.
+  - `userprompt`: User-provided prompts.
+
+  Therefore, when you need a literal `{}`, you need to escape them by using
+  double braces, i.e. `{{}}`.
 
 ## Contributing
 
