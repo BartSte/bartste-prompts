@@ -3,8 +3,11 @@ from abc import ABC, abstractmethod
 from subprocess import Popen
 from typing import TYPE_CHECKING, override
 
+from prompts.commands import Command
+from prompts.prompt import EditPrompt
+
 if TYPE_CHECKING:
-    from prompts.promptmaker import Prompt
+    from prompts.factory import Prompt
 
 
 class AbstractAction(ABC):
@@ -20,20 +23,20 @@ class AbstractAction(ABC):
     prompt: "Prompt"
     files: set[str]
     filetype: str
-    command: str
+    command: Command
     userprompt: str
 
     def __init__(
         self,
         prompt: "Prompt",
-        command: str,
+        command: Command | str,
         files: set[str],
         filetype: str,
         userprompt: str,
     ):
         """Initialize the tool with a prompt, command, files, and filetype."""
         self.prompt = prompt
-        self.command = command
+        self.command = Command(command)
         self.files = files
         self.filetype = filetype
         self.userprompt = userprompt
@@ -55,7 +58,7 @@ class Json(AbstractAction):
     def __call__(self):
         """Print the prompt as a json string to stdout."""
         result: dict[str, str | list[str]] = dict(
-            command=self.command,
+            command=self.command.name.lower(),
             files=list(self.files),
             filetype=self.filetype,
             prompt=str(self.prompt),
@@ -71,7 +74,7 @@ class Aider(AbstractAction):
     def __call__(self):
         """Execute the aider command with the prompt and files."""
         prompt: str = str(self.prompt)
-        if self.command in self.question:
+        if not isinstance(self.prompt, EditPrompt):
             prompt = f"/ask {prompt}"
 
         process: Popen[bytes] = Popen(

@@ -27,7 +27,7 @@ where = ["src"]
 exclude = ["tests", "__pycache__"]
 
 [tool.setuptools.package-data]
-prompts = ["_text/*.md", "_text/**/*.md"]
+prompts = ["_instructions/*.md", "_instructions/**/*.md"]
 
 [tool.ruff]
 line-length = 79

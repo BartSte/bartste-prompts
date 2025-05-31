@@ -5,10 +5,10 @@ import sys
 import unittest
 
 from prompts.actions import Json, Print
-from prompts.promptmaker import Prompt
+from prompts.prompt import EditPrompt
 
 
-class DummyPrompt(Prompt):
+class DummyPrompt(EditPrompt):
     """A dummy Prompt class for testing that returns a constant string."""
 
     def __str__(self) -> str:
@@ -20,7 +20,7 @@ class TestTools(unittest.TestCase):
 
     def setUp(self) -> None:
         """Set up a dummy prompt and a sample files set for testing."""
-        self.prompt = DummyPrompt(command="cmd", files="files", filetype="ft")
+        self.prompt = DummyPrompt(command="docstrings", files="files", filetype="ft")
         self.files = {"file1.py", "file2.py"}
 
     def test_print_tool(self) -> None:
@@ -29,7 +29,7 @@ class TestTools(unittest.TestCase):
         original_stdout = sys.stdout
         sys.stdout = captured_output
         try:
-            tool = Print(self.prompt, "cmd", self.files, "ft", "user prompt")
+            tool = Print(self.prompt, "docstrings", self.files, "ft", "user prompt")
             tool()
         finally:
             sys.stdout = original_stdout
@@ -41,7 +41,7 @@ class TestTools(unittest.TestCase):
         original_stdout = sys.stdout
         sys.stdout = captured_output
         try:
-            tool = Json(self.prompt, "cmd", self.files, "ft", "user prompt")
+            tool = Json(self.prompt, "docstrings", self.files, "ft", "user prompt")
             tool()
         finally:
             sys.stdout = original_stdout
@@ -49,7 +49,7 @@ class TestTools(unittest.TestCase):
             captured_output.getvalue()
         )
         logging.debug("result = %s", result)
-        self.assertEqual(result.get("command"), "cmd")
+        self.assertEqual(result.get("command"), "docstrings")
         self.assertEqual(set(result.get("files", [])), self.files)
         self.assertEqual(result.get("filetype"), "ft")
         self.assertEqual(result.get("prompt"), "dummy prompt")
