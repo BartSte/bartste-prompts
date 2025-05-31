@@ -1,6 +1,6 @@
 [project]
 name = "bartste-prompts"
-version = "0.3.2"
+version = "0.3.3"
 description = "A collection of prompts"
 authors = [
     {name = "BartSte" },
@@ -27,19 +27,19 @@ where = ["src"]
 exclude = ["tests", "__pycache__"]
 
 [tool.setuptools.package-data]
-prompts = ["_text/*.md", "_text/**/*.md"]
+prompts = ["_instructions/*.md", "_instructions/**/*.md"]
 
 [tool.ruff]
-line-length = 79
+line-length = 80
 
 [tool.black]
-line-length = 79
+line-length = 80
 
 [tool.isort]
-line_length = 79
+line_length = 80
 
 [tool.flake8]
-max-line-length = 79
+max-line-length = 80
 
 [build-system]
 requires = ["setuptools>=42"]

@@ -1,28 +1,28 @@
 import argparse
-from collections.abc import Mapping
 from os import listdir
 from os.path import isfile, join, splitext
 from typing import TYPE_CHECKING
 
 from pygeneral import path
 
-from prompts import _text
-from prompts.actions import ActionFactory
-from prompts.promptmaker import make_prompt
+import prompts
 from prompts._logger import setup as setup_logger
+from prompts.actions import ActionFactory
+from prompts.commands import Command
+from prompts.prompt import make_prompt
 
 if TYPE_CHECKING:
     from prompts.actions import AbstractAction
-    from prompts.promptmaker import Prompt
+    from prompts.prompt import Prompt
 
 """Mapping of available commands to their help text."""
-_COMMANDS: Mapping[str, str] = {
-    "docstrings": "Add docstrings to files",
-    "typehints": "Add type hints to files",
-    "refactor": "Refactor code based on best practices",
-    "fix": "Fix bugs in the code",
-    "unittests": "Generate thorough unit tests for files",
-    "explain": "Explain code to the user",
+descriptions: dict[Command, str] = {
+    Command.DOCSTRINGS: "Add docstrings to files",
+    Command.TYPEHINTS: "Add type hints to files",
+    Command.REFACTOR: "Refactor code based on best practices",
+    Command.FIX: "Fix bugs in the code",
+    Command.UNITTESTS: "Generate thorough unit tests for files",
+    Command.EXPLAIN: "Explain code to the user",
 }
 
 
@@ -37,8 +37,8 @@ def setup() -> argparse.ArgumentParser:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
-    for cmd, help_text in _COMMANDS.items():
-        subparser = subparsers.add_parser(cmd, help=help_text)
+    for cmd, help_text in descriptions.items():
+        subparser = subparsers.add_parser(cmd.value, help=help_text)
         _add_options(subparser)
         _add_positional(subparser)
         subparser.set_defaults(func=_func)
@@ -55,7 +55,9 @@ def _add_options(parser: argparse.ArgumentParser) -> None:
         "-f",
         "--filetype",
         default="",
-        choices=_get_file_names(path.module(_text.filetype)),
+        choices=_get_file_names(
+            join(path.module(prompts), "_instructions", "edit_instructions")
+        ),
         help=(
             "Specify a filetype to add filetype-specific descriptions to the "
             "prompt"
@@ -130,13 +132,15 @@ def _func(args: argparse.Namespace):
         A string representation of the generated prompt.
     """
     setup_logger(args.loglevel, args.logfile)
-    factory: ActionFactory = ActionFactory(args.action)
-    kwargs = dict(
+    kwargs: dict[str, str] = dict(
         command=args.command,
+        files=", ".join(args.files),
         filetype=args.filetype,
-        files=set(args.files),
         userprompt=args.userprompt,
     )
     prompt: "Prompt" = make_prompt(**kwargs)
+
+    factory: ActionFactory = ActionFactory(args.action)
     action: "AbstractAction" = factory.create(prompt, **kwargs)
+
     action()
