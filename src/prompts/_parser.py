@@ -55,7 +55,7 @@ def _add_options(parser: argparse.ArgumentParser) -> None:
         "-f",
         "--filetype",
         default="",
-        choices=_get_file_names(
+        choices=[""] + _get_file_names(
             join(path.module(prompts), "_instructions", "edit_instructions")
         ),
         help=(
