@@ -1,6 +1,6 @@
 [project]
 name = "bartste-prompts"
-version = "0.3.3b0"
+version = "0.3.3b1"
 description = "A collection of prompts"
 authors = [
     {name = "BartSte" },

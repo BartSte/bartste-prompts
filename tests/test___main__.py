@@ -5,8 +5,10 @@ from collections.abc import Callable
 
 import prompts.__main__ as main_module
 
+
 class DummyParser:
     """Stub parser with tracking for parse_args calls."""
+
     parse_args_called: bool
     args: object
 
@@ -20,9 +22,12 @@ class DummyParser:
         self.parse_args_called = True
         return self.args
 
+
 class DummyArgs:
     """Stub for argument namespace."""
+
     func: Callable[[object], None]
+
 
 class TestMain(unittest.TestCase):
     """Tests for the main function in prompts.__main__."""
@@ -32,8 +37,10 @@ class TestMain(unittest.TestCase):
         calls: list[tuple[str, object]] = []
         # Create dummy args with a function to record calls
         dummy_args = DummyArgs()
+
         def dummy_func(args: object) -> None:
             calls.append(("func_called_with", args))
+
         dummy_args.func = dummy_func
 
         # Create and patch parser setup
@@ -45,6 +52,10 @@ class TestMain(unittest.TestCase):
         finally:
             main_module._parser.setup = original_setup  # Restore original setup
 
-        # Verify parse_args was called and function was invoked with correct args
-        self.assertTrue(parser.parse_args_called, "parse_args() should have been called")
+        # Verify parse_args was called and function was invoked with correct
+        # args
+        self.assertTrue(
+            parser.parse_args_called,
+            "parse_args() should have been called",
+        )
         self.assertEqual(calls, [("func_called_with", dummy_args)])

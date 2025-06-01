@@ -1,9 +1,8 @@
-import argparse
 import os
 import tempfile
 import unittest
 
-from prompts._parser import setup, _get_file_names
+from prompts._parser import _get_file_names, setup
 
 
 class TestParser(unittest.TestCase):
@@ -26,7 +25,8 @@ class TestParser(unittest.TestCase):
             self.assertNotIn("subdir", result)
 
     def test_setup_parser_defaults(self) -> None:
-        """Test that parser.setup() configures defaults correctly for a subcommand."""
+        """Test that parser.setup() configures defaults correctly
+        for a subcommand."""
         parser = setup()
         args = parser.parse_args(["docstrings"])
         self.assertEqual(args.command, "docstrings")
@@ -42,15 +42,23 @@ class TestParser(unittest.TestCase):
     def test_parse_args_with_options_and_files(self) -> None:
         """Test parsing of options and positional file arguments."""
         parser = setup()
-        args = parser.parse_args([
-            "fix",
-            "-f", "python",
-            "-l", "DEBUG",
-            "-a", "json",
-            "-u", "user prompt",
-            "--logfile", "mylog.log",
-            "file1.py", "file2.txt",
-        ])
+        args = parser.parse_args(
+            [
+                "fix",
+                "-f",
+                "python",
+                "-l",
+                "DEBUG",
+                "-a",
+                "json",
+                "-u",
+                "user prompt",
+                "--logfile",
+                "mylog.log",
+                "file1.py",
+                "file2.txt",
+            ]
+        )
         self.assertEqual(args.command, "fix")
         self.assertEqual(args.filetype, "python")
         self.assertEqual(args.loglevel, "DEBUG")
