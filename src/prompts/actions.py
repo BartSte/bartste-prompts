@@ -82,28 +82,23 @@ class Aider(AbstractAction):
     """Action that invokes the 'aider' CLI with the prompt and specified
     files."""
 
-    question: tuple[str, ...] = ("explain",)
-
     @override
     def __call__(self) -> None:
         """Execute the aider command with the prompt and files."""
-        prompt: str = str(self.prompt)
-        if Capability.EDIT not in self.command.capabilities:
-            logging.debug("Prepending prompt with '/ask'.")
-            prompt = f"/ask {prompt}"
-
-        process: Popen[bytes] = Popen(
-            [
-                "aider",
-                "--yes-always",
-                "--no-check-update",
-                "--no-suggest-shell-commands",
-                "--message",
-                prompt,
-                *self.files,
-            ]
+        prefix: str = (
+            "/code" if Capability.EDIT in self.command.capabilities else "/ask"
         )
-        process.wait()
+        cmd: list[str] = [
+            "aider",
+            "--yes-always",
+            "--no-check-update",
+            "--no-suggest-shell-commands",
+            "--message",
+            f"{prefix} {self.prompt}",
+            *self.files,
+        ]
+        logging.debug("Running command: %s", " ".join(cmd))
+        Popen(cmd).wait()
 
 
 class ActionFactory:
