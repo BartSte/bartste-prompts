@@ -8,8 +8,8 @@ from pygeneral import path
 import prompts
 from prompts._logger import setup as setup_logger
 from prompts.actions import ActionFactory
-from prompts.commands import Command
-from prompts.prompt import make_prompt
+from prompts.enums import Capability, Command
+from prompts.prompt import Instructions
 
 if TYPE_CHECKING:
     from prompts.actions import AbstractAction
@@ -55,8 +55,9 @@ def _add_options(parser: argparse.ArgumentParser) -> None:
         "-f",
         "--filetype",
         default="",
-        choices=[""] + _get_file_names(
-            join(path.module(prompts), "_instructions", "edit_instructions")
+        choices=[""]
+        + _get_file_names(
+            join(path.module(prompts), "_instructions", Capability.EDIT.value)
         ),
         help=(
             "Specify a filetype to add filetype-specific descriptions to the "
@@ -138,8 +139,8 @@ def _func(args: argparse.Namespace):
         filetype=args.filetype,
         userprompt=args.userprompt,
     )
-    prompt: "Prompt" = make_prompt(**kwargs)
-
+    instructions: Instructions = Instructions(**kwargs)
+    prompt: Prompt = instructions.make_prompt()
     factory: ActionFactory = ActionFactory(args.action)
     action: "AbstractAction" = factory.create(prompt, **kwargs)
 

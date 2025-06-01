@@ -1,5 +1,11 @@
-from .actions import AbstractAction, ActionFactory, Aider, Json, Print
-from .prompt import EditPrompt, Prompt
+from .actions import (
+    AbstractAction,
+    ActionFactory,
+    Aider,
+    Json,
+    Print,
+)
+from .prompt import Instructions, Prompt
 
 __all__ = [
     "AbstractAction",
@@ -8,5 +14,5 @@ __all__ = [
     "Json",
     "Print",
     "Prompt",
-    "EditPrompt",
+    "Instructions",
 ]

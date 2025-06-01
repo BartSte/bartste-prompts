@@ -1,10 +1,11 @@
 import json
+import logging
 from abc import ABC, abstractmethod
 from subprocess import Popen
 from typing import override
 
-from prompts.commands import Command
-from prompts.prompt import EditPrompt, Prompt
+from prompts.enums import Capability, Command
+from prompts.prompt import Prompt
 
 
 class AbstractAction(ABC):
@@ -68,7 +69,7 @@ class Json(AbstractAction):
     def __call__(self) -> None:
         """Print the prompt as a json string to stdout."""
         result: dict[str, str | list[str]] = dict(
-            command=self.command.name.lower(),
+            command=self.command.value,
             files=list(self.files),
             filetype=self.filetype,
             prompt=str(self.prompt),
@@ -87,7 +88,8 @@ class Aider(AbstractAction):
     def __call__(self) -> None:
         """Execute the aider command with the prompt and files."""
         prompt: str = str(self.prompt)
-        if not isinstance(self.prompt, EditPrompt):
+        if Capability.EDIT not in self.command.capabilities:
+            logging.debug("Prepending prompt with '/ask'.")
             prompt = f"/ask {prompt}"
 
         process: Popen[bytes] = Popen(
@@ -124,8 +126,8 @@ class ActionFactory:
         tools: dict[str, type[AbstractAction]] = self.all()
         try:
             self._cls = tools[name]
-        except KeyError:
-            raise ValueError(f"No tool available named '{name}'")
+        except KeyError as error:
+            raise ValueError(f"No tool available named '{name}'") from error
 
     def create(self, prompt: "Prompt", **kwargs: str) -> AbstractAction:
         """Create an instance of the specified tool with provided arguments.
