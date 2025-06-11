@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from subprocess import Popen
 from typing import override
 
-from prompts.enums import Capability, Command
+from prompts.enums import Command
 from prompts.prompt import Prompt
 
 
@@ -85,9 +85,7 @@ class Aider(AbstractAction):
     @override
     def __call__(self) -> None:
         """Execute the aider command with the prompt and files."""
-        prefix: str = (
-            "/code" if Capability.EDIT in self.command.capabilities else "/ask"
-        )
+        prefix: str = "/ask" if self.command == Command.EXPLAIN else "/code"
         cmd: list[str] = [
             "aider",
             "--yes-always",

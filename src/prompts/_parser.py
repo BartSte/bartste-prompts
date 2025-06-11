@@ -1,6 +1,6 @@
 import argparse
 from os import listdir
-from os.path import isfile, join, splitext
+from os.path import exists, isfile, join, splitext
 from typing import TYPE_CHECKING
 
 from pygeneral import path
@@ -8,7 +8,7 @@ from pygeneral import path
 import prompts
 from prompts._logger import setup as setup_logger
 from prompts.actions import ActionFactory
-from prompts.enums import Capability, Command
+from prompts.enums import Command
 from prompts.prompt import Instructions
 
 if TYPE_CHECKING:
@@ -39,13 +39,13 @@ def setup() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", required=True)
     for cmd, help_text in descriptions.items():
         subparser = subparsers.add_parser(cmd.value, help=help_text)
-        _add_options(subparser)
+        _add_options(subparser, cmd)
         _add_positional(subparser)
         subparser.set_defaults(func=_func)
     return parser
 
 
-def _add_options(parser: argparse.ArgumentParser) -> None:
+def _add_options(parser: argparse.ArgumentParser, command: Command) -> None:
     """Add common command line options to a parser.
 
     Args:
@@ -55,9 +55,10 @@ def _add_options(parser: argparse.ArgumentParser) -> None:
         "-f",
         "--filetype",
         default="",
-        choices=[""]
-        + _get_file_names(
-            join(path.module(prompts), "_instructions", Capability.EDIT.value)
+        choices=_get_file_names(
+            join(
+                path.module(prompts), "_instructions", command.value, "filetype"
+            )
         ),
         help=(
             "Specify a filetype to add filetype-specific descriptions to the "
@@ -102,6 +103,9 @@ def _get_file_names(directory: str) -> list[str]:
     Returns:
         A list of file names with extensions removed.
     """
+    if not exists(directory):
+        return []
+
     return [
         splitext(path)[0]
         for path in listdir(directory)

@@ -64,16 +64,6 @@ class TestInstructionsMakePrompt(unittest.TestCase):
         self.assertEqual(prompt.userprompt, "UP")
 
 
-class TestInstructionsFiletypeCapabilities(unittest.TestCase):
-    """Unit tests for the filetype method based on capabilities."""
-
-    def test_filetype_empty_for_explain(self) -> None:
-        """Test that filetype returns empty when command has no capabilities."""
-        instr = Instructions("explain", filetype="any")
-        instr._read = lambda path: "x"
-        self.assertEqual(instr.filetype(), "")
-
-
 class TestInstructionsUserFiles(unittest.TestCase):
     """Unit tests for files and userprompt methods in Instructions."""
 

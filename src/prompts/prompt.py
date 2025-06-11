@@ -71,7 +71,7 @@ class Instructions:
         Returns:
             Instruction content for the command, or empty string if not
             available."""
-        return self._get("command", f"{self._command.value}.md")
+        return self._get(self._command.value, "command.md")
 
     def files(self) -> str:
         """Get instruction regarding file handling.
@@ -79,7 +79,7 @@ class Instructions:
         Returns:
             Instruction content for file instructions, or empty string if not
             available."""
-        return self._get("files.md")
+        return self._get(self._command.value, "files.md")
 
     def userprompt(self) -> str:
         """Get instruction for user prompt content.
@@ -88,7 +88,7 @@ class Instructions:
             Instruction content for user prompt, or empty string if not
             available.
         """
-        return self._get("userprompt.md")
+        return self._get(self._command.value, "userprompt.md")
 
     def filetype(self) -> str:
         """Get instruction for specific file type editing.
@@ -98,11 +98,7 @@ class Instructions:
             available.
         """
         file: str = self._kwargs.get("filetype", "default") + ".md"
-        instructions: Generator[str] = (
-            self._get(capability.value, file)
-            for capability in self._command.capabilities
-        )
-        return "\n".join(instructions)
+        return self._get(self._command.value, "filetype", file)
 
     def _get(self, *args: str) -> str:
         """Get and format instruction content.
