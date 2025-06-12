@@ -1,6 +1,6 @@
-## Files to consider
+## Files to edit
 
-You MUST only consider the following file(s):
+You MUST only edit the following file(s):
 
 {files}
 
