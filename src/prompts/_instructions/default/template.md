@@ -1,0 +1,4 @@
+{command}
+{files}
+{filetype}
+{user}

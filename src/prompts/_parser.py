@@ -8,22 +8,10 @@ from pygeneral import path
 import prompts
 from prompts._logger import setup as setup_logger
 from prompts.actions import ActionFactory
-from prompts.enums import Command
-from prompts.prompt import Instructions
+from prompts.instructions import InstructionPaths, Instructions
 
 if TYPE_CHECKING:
     from prompts.actions import AbstractAction
-    from prompts.prompt import Prompt
-
-"""Mapping of available commands to their help text."""
-descriptions: dict[Command, str] = {
-    Command.DOCSTRINGS: "Add docstrings to files",
-    Command.TYPEHINTS: "Add type hints to files",
-    Command.REFACTOR: "Refactor code based on best practices",
-    Command.FIX: "Fix bugs in the code",
-    Command.UNITTESTS: "Generate thorough unit tests for files",
-    Command.EXPLAIN: "Explain code to the user",
-}
 
 
 def setup() -> argparse.ArgumentParser:
@@ -33,19 +21,20 @@ def setup() -> argparse.ArgumentParser:
         argparse.ArgumentParser: Configured parser with subcommands and options.
     """
     parser = argparse.ArgumentParser(
-        description="Returns prompts for AI models.",
+        description="Return prompts for LLMs.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
-    for cmd, help_text in descriptions.items():
-        subparser = subparsers.add_parser(cmd.value, help=help_text)
-        _add_options(subparser, cmd)
+    paths: InstructionPaths = InstructionPaths()
+    for command in paths.commands:
+        subparser = subparsers.add_parser(command)
+        _add_options(subparser, command)
         _add_positional(subparser)
         subparser.set_defaults(func=_func)
     return parser
 
 
-def _add_options(parser: argparse.ArgumentParser, command: Command) -> None:
+def _add_options(parser: argparse.ArgumentParser, command: str) -> None:
     """Add common command line options to a parser.
 
     Args:
@@ -56,9 +45,7 @@ def _add_options(parser: argparse.ArgumentParser, command: Command) -> None:
         "--filetype",
         default="",
         choices=_get_file_names(
-            join(
-                path.module(prompts), "_instructions", command.value, "filetype"
-            )
+            join(path.module(prompts), "_instructions", command, "filetype")
         ),
         help=(
             "Specify a filetype to add filetype-specific descriptions to the "
@@ -81,7 +68,7 @@ def _add_options(parser: argparse.ArgumentParser, command: Command) -> None:
     )
     parser.add_argument(
         "-u",
-        "--userprompt",
+        "--user",
         default="",
         help="User input to be included in the prompt",
     )
@@ -141,10 +128,10 @@ def _func(args: argparse.Namespace):
         command=args.command,
         files=", ".join(args.files),
         filetype=args.filetype,
-        userprompt=args.userprompt,
+        user=args.user,
     )
     instructions: Instructions = Instructions(**kwargs)
-    prompt: Prompt = instructions.make_prompt()
+    prompt: str = instructions.make_prompt()
     factory: ActionFactory = ActionFactory(args.action)
     action: "AbstractAction" = factory.create(prompt, **kwargs)
 

@@ -33,7 +33,7 @@ class TestParser(unittest.TestCase):
         self.assertEqual(args.filetype, "")
         self.assertEqual(args.loglevel, "WARNING")
         self.assertEqual(args.action, "print")
-        self.assertEqual(args.userprompt, "")
+        self.assertEqual(args.user, "")
         self.assertEqual(args.files, [])
         # The func attribute should be set to the internal handler
         self.assertTrue(hasattr(args, "func"))
@@ -63,7 +63,7 @@ class TestParser(unittest.TestCase):
         self.assertEqual(args.filetype, "python")
         self.assertEqual(args.loglevel, "DEBUG")
         self.assertEqual(args.action, "json")
-        self.assertEqual(args.userprompt, "user prompt")
+        self.assertEqual(args.user, "user prompt")
         self.assertEqual(args.logfile, "mylog.log")
         self.assertEqual(args.files, ["file1.py", "file2.txt"])
 

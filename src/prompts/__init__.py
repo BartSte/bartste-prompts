@@ -1,5 +1,5 @@
 from .actions import AbstractAction, ActionFactory, Aider, Json, Print
-from .prompt import Instructions, Prompt
+from .instructions import Instructions
 
 __all__ = [
     "AbstractAction",
@@ -7,6 +7,5 @@ __all__ = [
     "Aider",
     "Json",
     "Print",
-    "Prompt",
     "Instructions",
 ]
