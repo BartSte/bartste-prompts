@@ -28,7 +28,7 @@ def setup() -> argparse.ArgumentParser:
     parser.add_argument(
         "--dir",
         default=_paths.instructions,
-        help="Directory with command definitions and instruction templates",
+        help="Set a custom directory for instructions",
     )
     directory: str = _preparse_directory()
     subparsers = parser.add_subparsers(dest="command", required=True)
