@@ -7,12 +7,37 @@ from prompts.exceptions import InstructionNotFoundError
 
 
 class InstructionPaths:
+    """Manages paths to instruction files.
+
+    Attributes:
+        _dir_instructions: The base directory for instruction files.
+    """
+
     _dir_instructions: str
 
     def __init__(self, dir_instructions: str = root_paths.instructions):
+        """Initialize the InstructionPaths.
+
+        Args:
+            dir_instructions: The base directory for instruction files.
+        """
         self._dir_instructions = dir_instructions
 
     def find(self, command: str, *args: str) -> str:
+        """Find the path to an instruction file.
+
+        Searches first in the command-specific directory, then in the default directory.
+
+        Args:
+            command: The command name.
+            *args: Additional path components.
+
+        Returns:
+            The path to the instruction file.
+
+        Raises:
+            InstructionNotFoundError: If the instruction file is not found.
+        """
         custom = self._join("commands", command, *args)
         default = self._join("default", *args)
         for path in (custom, default):
@@ -25,9 +50,29 @@ class InstructionPaths:
         )
 
     def _join(self, *args: str) -> str:
+        """Join path components relative to the instructions directory.
+
+        Args:
+            *args: Path components.
+
+        Returns:
+            The joined path.
+        """
         return join(self._dir_instructions, *args)
 
     def read(self, command: str, *args: str) -> str:
+        """Read the contents of an instruction file.
+
+        Args:
+            command: The command name.
+            *args: Additional path components.
+
+        Returns:
+            The contents of the instruction file.
+
+        Raises:
+            InstructionNotFoundError: If the instruction file is not found.
+        """
         path: str = self.find(command, *args)
         with open(path, "r", encoding="utf-8") as file:
             logging.debug("Reading instruction from '%s'", path)
@@ -35,6 +80,11 @@ class InstructionPaths:
 
     @property
     def commands(self) -> set[str]:
+        """Get the set of available commands.
+
+        Returns:
+            A set of command names.
+        """
         dir_commands: str = self._join("commands")
         return set(splitext(x)[0] for x in os.listdir(dir_commands))
 
@@ -88,12 +138,24 @@ class Instructions:
         dir_instructions: str = root_paths.instructions,
         **kwargs: str,
     ) -> None:
+        """Initialize the Instructions.
+
+        Args:
+            command: The command name.
+            dir_instructions: The base directory for instruction files.
+            **kwargs: Key-value pairs to format the instructions.
+        """
         self._command = command
         self._paths = InstructionPaths(dir_instructions)
         self._kwargs = {key: value for key, value in kwargs.items() if value}
         logging.debug("Instruction kwargs: %s", self._kwargs)
 
     def make_prompt(self) -> str:
+        """Assemble the full prompt from the instructions.
+
+        Returns:
+            The full prompt as a string.
+        """
         instructions: list[str] = [self._get("command")]
         instructions.extend(
             [self._get(key, value) for key, value in self._kwargs.items()]
@@ -102,6 +164,22 @@ class Instructions:
         return "\n".join([x for x in instructions if x])
 
     def _get(self, key: str, value: str = "") -> str:
+        """Get and format an instruction string.
+
+        Tries two patterns:
+          1. Look for a file named `<key>.md` and format it with the value.
+          2. If not found, look for a file named `<value>.md` in a directory named `<key>`.
+
+        Args:
+            key: The instruction key.
+            value: The value to format the instruction.
+
+        Returns:
+            The instruction string.
+
+        Raises:
+            InstructionNotFoundError: If the instruction file is not found.
+        """
         try:
             return self._paths.read(self._command, f"{key}.md").format(
                 **{key: value}
