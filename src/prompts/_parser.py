@@ -1,4 +1,5 @@
 import argparse
+from contextlib import suppress
 from typing import TYPE_CHECKING
 
 from prompts import _logger, _paths
@@ -104,7 +105,9 @@ def _add_dynamic_options(
     """
     paths: Instructions = Instructions(directory)
     for instruction in (x for x in paths.list(command) if x != "command"):
-        parser.add_argument(f"--{instruction}", default="")
+        # Duplicates arguments may occur and can be ignored
+        with suppress(argparse.ArgumentError):
+            parser.add_argument(f"--{instruction}", default="")
 
 
 def _func(args: argparse.Namespace) -> None:

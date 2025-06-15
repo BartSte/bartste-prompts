@@ -69,7 +69,6 @@ class Aider(AbstractAction):
     @override
     def __call__(self) -> None:
         """Execute the aider command with the prompt and files."""
-        prefix: str = "/ask" if self.command == "explain" else "/code"
         files: list[str] = self._kwargs.get("files", "").split(",")
         cmd: list[str] = [
             "aider",
@@ -77,7 +76,7 @@ class Aider(AbstractAction):
             "--no-check-update",
             "--no-suggest-shell-commands",
             "--message",
-            f"{prefix} {self.prompt}",
+            f"{self.prompt}",
             *files,
         ]
         logging.debug("Running command: %s", " ".join(cmd))
