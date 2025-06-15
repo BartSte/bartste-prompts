@@ -1,80 +1,120 @@
 # bartste-prompts
 
-A command-line tool to generate AI prompts for code modifications.
+A command-line tool to generate prompts for Large Language Models (LLMs) using customizable instruction templates.
 
-## Overview
+## Features
 
-This tool generates prompts for:
-
-- **docstrings**: Add Google-style docstrings.
-- **typehints**: Enhance code with proper type hints.
-- **refactor**: Refactor code following best practices.
-- **fix**: Fix issues in the code.
-- **unittests**: Generate unit tests for your code.
-- **explain**: Provide explanations for your code.
-
-The prompts can be passed directly to external tools such as `aider` to executed
-them using an LLM.
+- Generate context-specific prompts for different programming languages
+- Customizable instruction templates stored in `_instructions` directory
+- Support for multiple output actions (print, JSON, aider integration)
+- Strict mode enforcement for shell scripts
+- Docstring generation with language-specific conventions
 
 ## Installation
-
-To install `bartste-prompts`, you can either:
-
-- Install via pip:
 
 ```bash
 pip install git+https://github.com/bartste/bartste-prompts.git
 ```
 
-- Or clone the repository and install it directly:
-
-```bash
-pip install .
-```
-
 ## Usage
 
-Run the following to get info about the cli:
+### Basic Syntax
 
 ```bash
-prompts --help
+prompts <command> [options]
 ```
+
+### Custom Instructions Directory
+
+The tool uses instruction templates from `src/prompts/_instructions` by default. You can specify a custom instructions directory using the `--dir` option:
+
+```bash
+prompts <command> --dir=~/my-custom-prompts [options]
+```
+
+### Working Principles
+
+1. **Command Selection**: Each command (`docstrings`, `explain`, etc.) has its own set of instruction templates
+2. **Template Lookup**: For each parameter (files, filetype, user), the tool looks for:
+   - Command-specific templates: `_instructions/commands/<command>/<key>.md`
+   - Default templates: `_instructions/default/<key>.md`
+3. **Template Formatting**: Templates can contain placeholders like `{files}` that get replaced with actual values
+4. **Prompt Assembly**: All matched templates are concatenated to form the final prompt
 
 ### Examples
 
-- Generate a prompt that describes a refactor the `myfile.py` file.
+1. Add docstrings to Python files:
 
-  ```bash
-  prompts refactor -f python myfile.py
-  ```
+```bash
+prompts docstrings --files=src/main.py --filetype=python
+```
 
-- Send a prompt for writing docstrings to [aider](https://github.com/paul-gauthier/aider).
+2. Explain code with custom instructions:
 
-  ```bash
-  prompts docstrings --filetype python --action aider myfile.py
-  ```
+```bash
+prompts explain --files=src/utils.py --user="Explain this utility module"
+```
 
-  As is shown, a prompt can be redirected to an external tool using the `--action` option. Currently, `json` and [aider](https://github.com/paul-gauthier/aider) are supported.
+3. Refactor Lua code with strict mode:
 
-## Development
+```bash
+prompts refactor --files=game.lua --filetype=lua
+```
 
-### String formatting
+4. Generate unit tests for C++ code:
 
-The following is important for those who want to develop the code further:
+```bash
+prompts unittests --files=src/matrix.cpp --filetype=cpp
+```
 
-- The markdown files in `./src/prompts/_instructions` store the prompts. They are
-  formatted by python's `str.format` with the following args:
+### Available Commands
 
-  - `files`: Passed filenames.
-  - `user`: User-provided prompts.
+| Command      | Description                        |
+| ------------ | ---------------------------------- |
+| `docstrings` | Add docstrings to code             |
+| `explain`    | Explain code functionality         |
+| `fix`        | Analyze and fix code issues        |
+| `refactor`   | Improve code structure and quality |
+| `typehints`  | Add type annotations               |
+| `unittests`  | Generate unit tests                |
 
-  Therefore, when you need a literal `{}`, you need to escape them by using
-  double braces, i.e. `{{}}`.
+### Options
+
+| Option       | Description                        | Default                              |
+| ------------ | ---------------------------------- | ------------------------------------ |
+| `--action`   | Output action (print, json, aider) | `print`                              |
+| `--dir`      | Custom instructions directory      | Built-in                             |
+| `--loglevel` | Logging level                      | `WARNING`                            |
+| `--logfile`  | Log file path                      | `~/.local/state/bartste-prompts.log` |
+| `--files`    | Files to process                   |                                      |
+| `--filetype` | Programming language               |                                      |
+| `--user`     | Custom user instructions           |                                      |
+
+## Customization
+
+1. Create a directory for your custom instructions:
+
+```bash
+mkdir -p ~/my-custom-prompts/{default,commands}
+```
+
+2. Add/override templates:
+   - Default templates: `~/my-custom-prompts/default/<key>.md`
+   - Command-specific templates: `~/my-custom-prompts/commands/<command>/<key>.md`
+3. Use your custom instructions:
+
+```bash
+prompts <command> --dir=~/my-custom-prompts [options]
+```
+
+## Configuration
+
+The tool uses instruction templates from `src/prompts/_instructions`. You can customize these templates to modify the generated prompts.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on contributing.
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 
-See [LICENSE](LICENSE) for licensing details.
+This project is licensed under the terms of the MIT license. See [LICENSE](LICENSE) for details.
