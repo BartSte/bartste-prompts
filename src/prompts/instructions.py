@@ -157,7 +157,24 @@ class Instructions:
             A set of command names.
         """
         dir_commands: str = self._join("commands")
-        return set(splitext(x)[0] for x in os.listdir(dir_commands))
+        return self._list_dir(dir_commands)
+
+    def _list_dir(self, directory: str) -> set[str]:
+        """List files and directories in the given directory.
+
+        Extension names are stripped from filenames.
+
+        Args:
+            directory: The directory path.
+
+        Returns:
+            A set of filenames and directory names.
+        """
+        try:
+            return set(splitext(x)[0] for x in os.listdir(directory))
+        except FileNotFoundError:
+            logging.error("Directory not found: %s", directory)
+            return set()
 
     def list(self, command: str) -> set[str]:
         """Get the set of available instructions for a command.
@@ -170,6 +187,4 @@ class Instructions:
         """
         dir_commands: str = self._join("commands", command)
         dir_default: str = self._join("default")
-        result = set(splitext(x)[0] for x in os.listdir(dir_commands))
-        result.update(splitext(x)[0] for x in os.listdir(dir_default))
-        return result
+        return self._list_dir(dir_commands) | self._list_dir(dir_default)
