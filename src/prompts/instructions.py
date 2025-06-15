@@ -6,89 +6,6 @@ from prompts import paths as root_paths
 from prompts.exceptions import InstructionNotFoundError
 
 
-class InstructionPaths:
-    """Manages paths to instruction files.
-
-    Attributes:
-        _dir_instructions: The base directory for instruction files.
-    """
-
-    _dir_instructions: str
-
-    def __init__(self, dir_instructions: str = root_paths.instructions):
-        """Initialize the InstructionPaths.
-
-        Args:
-            dir_instructions: The base directory for instruction files.
-        """
-        self._dir_instructions = dir_instructions
-
-    def find(self, command: str, *args: str) -> str:
-        """Find the path to an instruction file.
-
-        Searches first in the command-specific directory, then in the default directory.
-
-        Args:
-            command: The command name.
-            *args: Additional path components.
-
-        Returns:
-            The path to the instruction file.
-
-        Raises:
-            InstructionNotFoundError: If the instruction file is not found.
-        """
-        custom = self._join("commands", command, *args)
-        default = self._join("default", *args)
-        for path in (custom, default):
-            if exists(path):
-                logging.debug("Instruction found in '%s'", path)
-                return path
-
-        raise InstructionNotFoundError(
-            f"No instructions found in '{custom}' or '{default}'"
-        )
-
-    def _join(self, *args: str) -> str:
-        """Join path components relative to the instructions directory.
-
-        Args:
-            *args: Path components.
-
-        Returns:
-            The joined path.
-        """
-        return join(self._dir_instructions, *args)
-
-    def read(self, command: str, *args: str) -> str:
-        """Read the contents of an instruction file.
-
-        Args:
-            command: The command name.
-            *args: Additional path components.
-
-        Returns:
-            The contents of the instruction file.
-
-        Raises:
-            InstructionNotFoundError: If the instruction file is not found.
-        """
-        path: str = self.find(command, *args)
-        with open(path, "r", encoding="utf-8") as file:
-            logging.debug("Reading instruction from '%s'", path)
-            return file.read()
-
-    @property
-    def commands(self) -> set[str]:
-        """Get the set of available commands.
-
-        Returns:
-            A set of command names.
-        """
-        dir_commands: str = self._join("commands")
-        return set(splitext(x)[0] for x in os.listdir(dir_commands))
-
-
 class Instructions:
     """A set of instructions together make up the prompt. This class is
     responsible for retrieving the right instructions from the `_instructions`
@@ -128,42 +45,26 @@ class Instructions:
     changing the source code.
     """
 
-    _command: str
-    _kwargs: dict[str, str]
-    _paths: InstructionPaths
+    _directory: str
 
-    def __init__(
-        self,
-        command: str,
-        dir_instructions: str = root_paths.instructions,
-        **kwargs: str,
-    ) -> None:
-        """Initialize the Instructions.
+    def __init__(self, directory: str = root_paths.instructions) -> None:
+        self._directory = directory
 
-        Args:
-            command: The command name.
-            dir_instructions: The base directory for instruction files.
-            **kwargs: Key-value pairs to format the instructions.
-        """
-        self._command = command
-        self._paths = InstructionPaths(dir_instructions)
-        self._kwargs = {key: value for key, value in kwargs.items() if value}
-        logging.debug("Instruction kwargs: %s", self._kwargs)
-
-    def make_prompt(self) -> str:
+    def make_prompt(self, command: str, **kwargs: str) -> str:
         """Assemble the full prompt from the instructions.
 
         Returns:
             The full prompt as a string.
         """
-        instructions: list[str] = [self._get("command")]
+        kwargs = {key: value for key, value in kwargs.items() if value}
+        instructions: list[str] = [self._get(command, "command")]
         instructions.extend(
-            [self._get(key, value) for key, value in self._kwargs.items()]
+            [self._get(command, key, value) for key, value in kwargs.items()]
         )
         logging.debug("Instruction list: %s", instructions)
         return "\n".join([x for x in instructions if x])
 
-    def _get(self, key: str, value: str = "") -> str:
+    def _get(self, command: str, key: str, value: str = "") -> str:
         """Get and format an instruction string.
 
         Tries two patterns:
@@ -181,8 +82,85 @@ class Instructions:
             InstructionNotFoundError: If the instruction file is not found.
         """
         try:
-            return self._paths.read(self._command, f"{key}.md").format(
-                **{key: value}
-            )
+            return self.read(command, f"{key}.md").format(**{key: value})
         except InstructionNotFoundError:
-            return self._paths.read(self._command, key, f"{value}.md")
+            return self.read(command, key, f"{value}.md")
+
+    def read(self, command: str, *args: str) -> str:
+        """Read the contents of an instruction file.
+
+        Args:
+            command: The command name.
+            *args: Additional path components.
+
+        Returns:
+            The contents of the instruction file.
+
+        Raises:
+            InstructionNotFoundError: If the instruction file is not found.
+        """
+        path: str = self.find(command, *args)
+        with open(path, "r", encoding="utf-8") as file:
+            logging.debug("Reading instruction from '%s'", path)
+            return file.read()
+
+    def find(self, command: str, *args: str) -> str:
+        """Find the path to an instruction file.
+
+        Searches first in the command-specific directory, then in the default directory.
+
+        Args:
+            command: The command name.
+            *args: Additional path components.
+
+        Returns:
+            The path to the instruction file.
+
+        Raises:
+            InstructionNotFoundError: If the instruction file is not found.
+        """
+        custom = self._join("commands", command, *args)
+        default = self._join("default", *args)
+        for path in (custom, default):
+            if exists(path):
+                logging.debug("Instruction found in '%s'", path)
+                return path
+
+        raise InstructionNotFoundError(
+            f"No instructions found in '{custom}' or '{default}'"
+        )
+
+    def _join(self, *args: str) -> str:
+        """Join path components relative to the instructions directory.
+
+        Args:
+            *args: Path components.
+
+        Returns:
+            The joined path.
+        """
+        return join(self._directory, *args)
+
+    def list_commands(self) -> set[str]:
+        """Get the set of available commands.
+
+        Returns:
+            A set of command names.
+        """
+        dir_commands: str = self._join("commands")
+        return set(splitext(x)[0] for x in os.listdir(dir_commands))
+
+    def list(self, command: str) -> set[str]:
+        """Get the set of available instructions for a command.
+
+        Args:
+            command: The command name.
+
+        Returns:
+            A set of instruction names.
+        """
+        dir_commands: str = self._join("commands", command)
+        dir_default: str = self._join("default")
+        result = set(splitext(x)[0] for x in os.listdir(dir_commands))
+        result.update(splitext(x)[0] for x in os.listdir(dir_default))
+        return result

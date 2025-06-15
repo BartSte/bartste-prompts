@@ -1,10 +1,9 @@
 import argparse
 from typing import TYPE_CHECKING
 
-
 from prompts import _logger
 from prompts.actions import ActionFactory
-from prompts.instructions import InstructionPaths, Instructions
+from prompts.instructions import Instructions
 
 if TYPE_CHECKING:
     from prompts.actions import AbstractAction
@@ -21,8 +20,7 @@ def setup() -> argparse.ArgumentParser:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
-    paths: InstructionPaths = InstructionPaths()
-    for command in paths.commands:
+    for command in Instructions().list_commands():
         subparser = subparsers.add_parser(command)
         _add_options(subparser, command)
         subparser.set_defaults(func=_func)
@@ -54,24 +52,9 @@ def _add_options(parser: argparse.ArgumentParser, command: str) -> None:
         default="~/.local/state/bartste-prompts.log",
         help="Path to log file",
     )
-    parser.add_argument(
-        "-f",
-        "--files",
-        help="Files to be processed, separated by spaces commas",
-    )
-    parser.add_argument(
-        "-t",
-        "--filetype",
-        help=(
-            "Specify a filetype to add filetype-specific descriptions to the "
-            "prompt"
-        ),
-    )
-    parser.add_argument(
-        "-u",
-        "--user",
-        help="User input to be included in the prompt",
-    )
+    paths: Instructions = Instructions()
+    for instruction in (x for x in paths.list(command) if x != "command"):
+        parser.add_argument(f"--{instruction}", default="")
 
 
 def _func(args: argparse.Namespace):
@@ -84,14 +67,13 @@ def _func(args: argparse.Namespace):
         A string representation of the generated prompt.
     """
     _logger.setup(args.loglevel, args.logfile)
-    kwargs: dict[str, str] = dict(
-        command=args.command,
-        files=args.files,
-        filetype=args.filetype,
-        user=args.user,
-    )
-    instructions: Instructions = Instructions(**kwargs)
-    prompt: str = instructions.make_prompt()
+    instructions = Instructions()
+    kwargs = {
+        x: getattr(args, x)
+        for x in instructions.list(args.command)
+        if hasattr(args, x)
+    }
+    prompt: str = instructions.make_prompt(**kwargs)
     factory: ActionFactory = ActionFactory(args.action)
     action: "AbstractAction" = factory.create(prompt, **kwargs)
 
