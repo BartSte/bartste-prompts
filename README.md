@@ -132,6 +132,12 @@ Here, `command2` will fallback to the default directory for options, `key1` repr
 
 ## Troubleshooting
 
+If you encounter any issues, please report them on the issue tracker at: [bartste-prompts issues](https://github.com/BartSte/bartste-prompts/issues)
+
 ## Contributing
 
+Contributions are welcome! Please see [CONTRIBUTING](./CONTRIBUTING.md) for more information.
+
 ## License
+
+Distributed under the [MIT License](./LICENCE).
