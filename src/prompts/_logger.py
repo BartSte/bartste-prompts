@@ -2,6 +2,9 @@
 
 import logging
 import os
+import sys
+
+from prompts.exceptions import InstructionNotFoundError
 
 
 def setup(
@@ -15,11 +18,12 @@ def setup(
                                                  CRITICAL)
         logfile: Path to log file.
     """
+    sys.excepthook = excepthook
     loglevel = loglevel.upper()
     logfile = os.path.expanduser(logfile)
     os.makedirs(os.path.dirname(logfile), exist_ok=True)
 
-    handlers = [logging.StreamHandler()]
+    handlers: list[logging.Handler] = [logging.StreamHandler()]
 
     file_handler = logging.FileHandler(logfile)
     file_handler.setLevel(loglevel)
@@ -35,3 +39,15 @@ def setup(
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         handlers=handlers,
     )
+
+
+def excepthook(exc_type, exc_value, exc_traceback):
+    """Global exception hook to log uncaught exceptions."""
+    if issubclass(exc_type, InstructionNotFoundError):
+        logging.error(f"Instruction not found: {exc_value}")
+    else:
+        logging.critical(
+            "Unexpected exception",
+            exc_info=(exc_type, exc_value, exc_traceback),
+        )
+        sys.__excepthook__(exc_type, exc_value, exc_traceback)

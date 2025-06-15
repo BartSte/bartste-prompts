@@ -40,7 +40,8 @@ class TestTools(unittest.TestCase):
         self.assertIn("dummy prompt", captured_output.getvalue())
 
     def test_json_tool(self) -> None:
-        """Test that Json tool prints a valid JSON string with correct details."""
+        """Test that Json tool prints a valid JSON string with correct
+        details."""
         captured_output = io.StringIO()
         original_stdout = sys.stdout
         sys.stdout = captured_output
@@ -59,4 +60,4 @@ class TestTools(unittest.TestCase):
         self.assertEqual(set(result.get("files", [])), self.files)
         self.assertEqual(result.get("filetype"), "ft")
         self.assertEqual(result.get("prompt"), "dummy prompt")
-        self.assertEqual(result.get("userprompt"), "user prompt")
+        self.assertEqual(result.get("user"), "user prompt")

@@ -1,11 +1,8 @@
-import json
 import logging
 from abc import ABC, abstractmethod
+from pprint import pp
 from subprocess import Popen
 from typing import override
-
-from prompts.enums import Command
-from prompts.prompt import Prompt
 
 
 class AbstractAction(ABC):
@@ -13,40 +10,29 @@ class AbstractAction(ABC):
 
     Attributes:
         prompt: The Prompt object.
-        command: The Command enum indicating the action type.
+        command: The command str indicating the action type.
         files: Set of file paths for the action.
         filetype: The type of files to process.
-        userprompt: The user-provided prompt text.
+        user: The user-provided prompt text.
     """
 
-    prompt: Prompt
-    files: set[str]
-    filetype: str
-    command: Command
-    userprompt: str
+    prompt: str
+    command: str
+    _kwargs: dict[str, str]
 
-    def __init__(
-        self,
-        prompt: Prompt,
-        command: Command | str,
-        files: str | set[str],
-        filetype: str,
-        userprompt: str,
-    ) -> None:
+    def __init__(self, prompt: str, command: str, **kwargs: str) -> None:
         """Initialize the AbstractAction.
 
         Args:
             prompt: The Prompt object.
-            command: The Command enum or its name.
+            command: The command str or its name.
             files: Comma-separated string or set of file paths.
             filetype: The type of files to process.
-            userprompt: The user-provided prompt text.
+            user: The user-provided prompt text.
         """
         self.prompt = prompt
-        self.command = Command(command)
-        self.filetype = filetype
-        self.userprompt = userprompt
-        self.files = files if isinstance(files, set) else set(files.split(", "))
+        self.command = command
+        self._kwargs = kwargs
 
     @abstractmethod
     def __call__(self) -> None:
@@ -69,13 +55,11 @@ class Json(AbstractAction):
     def __call__(self) -> None:
         """Print the prompt as a json string to stdout."""
         result: dict[str, str | list[str]] = dict(
-            command=self.command.value,
-            files=list(self.files),
-            filetype=self.filetype,
-            prompt=str(self.prompt),
-            userprompt=self.userprompt,
+            command=self.command,
+            prompt=self.prompt,
+            **self._kwargs,
         )
-        print(json.dumps(result))
+        pp(result)
 
 
 class Aider(AbstractAction):
@@ -85,7 +69,8 @@ class Aider(AbstractAction):
     @override
     def __call__(self) -> None:
         """Execute the aider command with the prompt and files."""
-        prefix: str = "/ask" if self.command == Command.EXPLAIN else "/code"
+        prefix: str = "/ask" if self.command == "explain" else "/code"
+        files: list[str] = self._kwargs.get("files", "").split(",")
         cmd: list[str] = [
             "aider",
             "--yes-always",
@@ -93,7 +78,7 @@ class Aider(AbstractAction):
             "--no-suggest-shell-commands",
             "--message",
             f"{prefix} {self.prompt}",
-            *self.files,
+            *files,
         ]
         logging.debug("Running command: %s", " ".join(cmd))
         Popen(cmd).wait()
@@ -122,7 +107,7 @@ class ActionFactory:
         except KeyError as error:
             raise ValueError(f"No tool available named '{name}'") from error
 
-    def create(self, prompt: "Prompt", **kwargs: str) -> AbstractAction:
+    def create(self, prompt: str, **kwargs: str) -> AbstractAction:
         """Create an instance of the specified tool with provided arguments.
 
         Returns:

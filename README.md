@@ -58,13 +58,15 @@ prompts --help
 
 ## Development
 
+### String formatting
+
 The following is important for those who want to develop the code further:
 
 - The markdown files in `./src/prompts/_instructions` store the prompts. They are
   formatted by python's `str.format` with the following args:
 
   - `files`: Passed filenames.
-  - `userprompt`: User-provided prompts.
+  - `user`: User-provided prompts.
 
   Therefore, when you need a literal `{}`, you need to escape them by using
   double braces, i.e. `{{}}`.
