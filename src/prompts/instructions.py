@@ -42,7 +42,8 @@ class Instructions:
     Now, it is not possible anymore to add a placeholder in the `<value>.md`.
 
     This mechanism allows for adding new instructions and commands without
-    changing the source code.
+    changing the source code. Users can set their own instruction directory
+    instead of using the default that is part of the source distribution.
     """
 
     _directory: str

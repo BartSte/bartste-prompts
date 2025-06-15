@@ -1,7 +1,7 @@
 import argparse
 from typing import TYPE_CHECKING
 
-from prompts import _logger
+from prompts import _logger, _paths
 from prompts.actions import ActionFactory
 from prompts.instructions import Instructions
 
@@ -19,15 +19,49 @@ def setup() -> argparse.ArgumentParser:
         description="Return prompts for LLMs.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
+    parser.add_argument(
+        "-v",
+        "--version",
+        action="version",
+        version=f"%(prog)s {__import__('prompts').__version__}",
+    )
+    parser.add_argument(
+        "--dir",
+        default=_paths.instructions,
+        help="Directory with command definitions and instruction templates",
+    )
+    directory: str = _preparse_directory()
     subparsers = parser.add_subparsers(dest="command", required=True)
-    for command in Instructions().list_commands():
+    for command in Instructions(directory).list_commands():
         subparser = subparsers.add_parser(command)
-        _add_options(subparser, command)
+        _add_options(subparser, command, directory)
         subparser.set_defaults(func=_func)
     return parser
 
 
-def _add_options(parser: argparse.ArgumentParser, command: str) -> None:
+def _preparse_directory() -> str:
+    """Parse initial arguments without adding subcommand parsers.
+
+    Only the --dir <value> or --dir=<value> is parsed in order to be able to
+    modify the instructions directory.
+
+    Args:
+        argv: The list of command-line arguments.
+
+    Returns:
+        The parsed arguments.
+    """
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("--dir", default=_paths.instructions)
+    args, _ = parser.parse_known_args()
+    return args.dir
+
+
+def _add_options(
+    parser: argparse.ArgumentParser,
+    command: str,
+    directory: str = _paths.instructions,
+) -> None:
     """Add common options to a subcommand parser.
 
     Args:
@@ -53,10 +87,14 @@ def _add_options(parser: argparse.ArgumentParser, command: str) -> None:
         default="~/.local/state/bartste-prompts.log",
         help="Path to log file",
     )
-    _add_dynamic_options(parser, command)
+    _add_dynamic_options(parser, command, directory)
 
 
-def _add_dynamic_options(parser: argparse.ArgumentParser, command: str) -> None:
+def _add_dynamic_options(
+    parser: argparse.ArgumentParser,
+    command: str,
+    directory: str = _paths.instructions,
+) -> None:
     """Add dynamic options to a subcommand parser based on available
     instructions.
 
@@ -64,7 +102,7 @@ def _add_dynamic_options(parser: argparse.ArgumentParser, command: str) -> None:
         parser: The subcommand parser to add options to.
         command: The name of the command being configured.
     """
-    paths: Instructions = Instructions()
+    paths: Instructions = Instructions(directory)
     for instruction in (x for x in paths.list(command) if x != "command"):
         parser.add_argument(f"--{instruction}", default="")
 
