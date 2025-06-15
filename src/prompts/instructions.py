@@ -2,7 +2,7 @@ import logging
 import os
 from os.path import exists, join, splitext
 
-from prompts import paths as root_paths
+from prompts import _paths
 from prompts.exceptions import InstructionNotFoundError
 
 
@@ -47,8 +47,14 @@ class Instructions:
 
     _directory: str
 
-    def __init__(self, directory: str = root_paths.instructions) -> None:
+    def __init__(self, directory: str = _paths.instructions) -> None:
+        """Initializes the Instructions instance.
+
+        Args:
+            directory: The directory path where instructions are stored.
+        """
         self._directory = directory
+        logging.info("Using instructions directory: %s", self._directory)
 
     def make_prompt(self, command: str, **kwargs: str) -> str:
         """Assemble the full prompt from the instructions.
@@ -69,7 +75,8 @@ class Instructions:
 
         Tries two patterns:
           1. Look for a file named `<key>.md` and format it with the value.
-          2. If not found, look for a file named `<value>.md` in a directory named `<key>`.
+          2. If not found, look for a file named `<value>.md` in a directory
+          named `<key>`.
 
         Args:
             key: The instruction key.
@@ -107,7 +114,8 @@ class Instructions:
     def find(self, command: str, *args: str) -> str:
         """Find the path to an instruction file.
 
-        Searches first in the command-specific directory, then in the default directory.
+        Searches first in the command-specific directory, then in the default
+        directory.
 
         Args:
             command: The command name.

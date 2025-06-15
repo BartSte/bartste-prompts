@@ -10,10 +10,10 @@ if TYPE_CHECKING:
 
 
 def setup() -> argparse.ArgumentParser:
-    """Initialize and configure the argument parser.
+    """Setup the argument parser with subcommands and options.
 
     Returns:
-        argparse.ArgumentParser: Configured parser with subcommands and options.
+        The configured argument parser.
     """
     parser = argparse.ArgumentParser(
         description="Return prompts for LLMs.",
@@ -28,10 +28,11 @@ def setup() -> argparse.ArgumentParser:
 
 
 def _add_options(parser: argparse.ArgumentParser, command: str) -> None:
-    """Add common command line options to a parser.
+    """Add common options to a subcommand parser.
 
     Args:
-        parser: Argument parser to add options to
+        parser: The subcommand parser to add options to.
+        command: The name of the command being configured.
     """
     parser.add_argument(
         "-a",
@@ -52,19 +53,27 @@ def _add_options(parser: argparse.ArgumentParser, command: str) -> None:
         default="~/.local/state/bartste-prompts.log",
         help="Path to log file",
     )
+    _add_dynamic_options(parser, command)
+
+
+def _add_dynamic_options(parser: argparse.ArgumentParser, command: str) -> None:
+    """Add dynamic options to a subcommand parser based on available
+    instructions.
+
+    Args:
+        parser: The subcommand parser to add options to.
+        command: The name of the command being configured.
+    """
     paths: Instructions = Instructions()
     for instruction in (x for x in paths.list(command) if x != "command"):
         parser.add_argument(f"--{instruction}", default="")
 
 
-def _func(args: argparse.Namespace):
-    """Determines and returns the prompt string based on parsed arguments.
+def _func(args: argparse.Namespace) -> None:
+    """Execute the selected action with generated prompt.
 
     Args:
         args: Parsed command-line arguments.
-
-    Returns:
-        A string representation of the generated prompt.
     """
     _logger.setup(args.loglevel, args.logfile)
     instructions = Instructions()
