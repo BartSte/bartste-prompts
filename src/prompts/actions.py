@@ -1,8 +1,15 @@
+"""Actions module.
+
+Defines AbstractAction and concrete action classes for invoking tools, as well
+as ActionFactory.
+"""
+
 import logging
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from pprint import pp
 from subprocess import Popen
-from typing import override
+from typing import Self, override
 
 
 class AbstractAction(ABC):
@@ -64,7 +71,43 @@ class Json(AbstractAction):
 
 class Aider(AbstractAction):
     """Action that invokes the 'aider' CLI with the prompt and specified
-    files."""
+    files.
+
+    By calling the instructor, aider will be called as is. When calling the
+    class methods code or ask, aider will be called with a special command
+    string prepended to the prompt, e.g., "/code" or "/ask", respectively.
+    """
+
+    @classmethod
+    def code(cls, prompt: str, command: str, **kwargs: str) -> Self:
+        """
+        Action to invoke the 'aider' CLI tool in "/code" mode with the prompt
+        and specified files.
+
+        Args:
+            prompt: the prompt.
+            command: the command.
+            kwargs: extra arguments passed to the parent.
+
+        Returns:
+            Aider instance.
+        """
+        return cls(f"/code {prompt}", command, **kwargs)
+
+    @classmethod
+    def ask(cls, prompt: str, command: str, **kwargs: str) -> Self:
+        """Action to invoke the 'aider' CLI tool in "/ask" mode with the prompt
+        and specified files.
+
+        Args:
+            prompt: the prompt.
+            command: the command.
+            kwargs: extra arguments passed to the parent.
+
+        Returns:
+            Aider instance.
+        """
+        return cls(f"/ask {prompt}", command, **kwargs)
 
     @override
     def __call__(self) -> None:
@@ -115,17 +158,6 @@ class ActionFactory:
         return self._cls(prompt, **kwargs)
 
     @classmethod
-    def all(cls) -> dict[str, type[AbstractAction]]:
-        """Return a mapping from tool names to tool classes.
-
-        Returns:
-            Dictionary mapping lowercase class names to the tool classes.
-        """
-        return {
-            cls.__name__.lower(): cls for cls in AbstractAction.__subclasses__()
-        }
-
-    @classmethod
     def names(cls) -> list[str]:
         """Return a list of available tool names.
 
@@ -133,3 +165,17 @@ class ActionFactory:
             list[str]: List of tool names.
         """
         return list(cls.all().keys())
+
+    @classmethod
+    def all(cls) -> dict[str, Callable[[str, str], AbstractAction]]:
+        """Return a mapping from tool names to tool classes.
+
+        Returns:
+            Dictionary mapping lowercase class names to the tool classes.
+        """
+        actions: dict[str, Callable[[str, str], AbstractAction]] = {
+            cls.__name__.lower(): cls for cls in AbstractAction.__subclasses__()
+        }
+        actions["aider-code"] = Aider.code
+        actions["aider-ask"] = Aider.ask
+        return actions
