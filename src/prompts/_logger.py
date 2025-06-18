@@ -34,12 +34,9 @@ def setup(
     )
     handlers.append(file_handler)
 
-    logging.basicConfig(
-        level=loglevel,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        handlers=handlers,
-    )
-
+    for handler in handlers:
+        handler.setLevel(loglevel)
+    logging.basicConfig(level=loglevel, handlers=handlers)
 
 def excepthook(exc_type, exc_value, exc_traceback):
     """Global exception hook to log uncaught exceptions."""
