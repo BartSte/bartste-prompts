@@ -18,7 +18,7 @@ def setup() -> argparse.ArgumentParser:
     """
     parser = argparse.ArgumentParser(
         description="Return prompts for LLMs.",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "-v",
@@ -32,12 +32,31 @@ def setup() -> argparse.ArgumentParser:
         help="Set a custom directory for instructions",
     )
     directory: str = _preparse_directory()
+    parser.epilog = _make_epilog()
     subparsers = parser.add_subparsers(dest="command", required=True)
     for command in Instructions(directory).list_commands():
         subparser = subparsers.add_parser(command)
         _add_options(subparser, command, directory)
         subparser.set_defaults(func=_func)
     return parser
+
+
+def _make_epilog(directory: str = _paths.instructions) -> str:
+    """Generate the epilog for the argument parser.
+
+    Returns:
+        The epilog string.
+
+    """
+    instructions = Instructions(directory)
+    cmds: set[str] = {f"--{cmd}" for cmd in instructions.list()}
+    return (
+        "The following options are available to all commands:\n"
+        f"  --action\n"
+        f"  {'\n  '.join(cmds)}\n"
+        "Command-specific options may be available and can be listed by running"
+        " `prompts <command> --help`."
+    )
 
 
 def _preparse_directory() -> str:

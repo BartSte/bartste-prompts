@@ -176,15 +176,19 @@ class Instructions:
             logging.error("Directory not found: %s", directory)
             return set()
 
-    def list(self, command: str) -> set[str]:
+    def list(self, command: str = "") -> set[str]:
         """Get the set of available instructions for a command.
 
         Args:
-            command: The command name.
+            command: The command name. If omitted, only the default
+                instructions are listed.
 
         Returns:
             A set of instruction names.
         """
-        dir_commands: str = self._join("commands", command)
         dir_default: str = self._join("default")
+        if not command:
+            return self._list_dir(dir_default)
+
+        dir_commands: str = self._join("commands", command)
         return self._list_dir(dir_commands) | self._list_dir(dir_default)
