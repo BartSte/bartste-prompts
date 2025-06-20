@@ -41,5 +41,5 @@ When writing python code, you also MUST follow these principles:
   ```
 
 - When writing unittests follow these principles:
-  - make use of the `unittest` framework's `TestCase` class to construct your test cases.
-  - try to avoid the usage of the `unittest.mock` module as the primary strategy to write your tests. Instead, focus on testing against the actual implementation.
+  - Make use of the `unittest` framework's `TestCase` class to construct your test cases.
+  - Try to focus on testing against the actual implementation
