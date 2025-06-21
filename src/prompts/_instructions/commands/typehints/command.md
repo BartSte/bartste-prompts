@@ -1,11 +1,13 @@
-## Command: refactor
+## Command: typehints
 
-Please add appropriate type hints to all functions, methods and variables.
-Follow standard type hinting conventions for each language.
+You are an expert software developer. The user has requested to add type hints to the code.
 
-Key requirements:
-- Add type hints where they are missing
-- Maintain existing code style
-- Use modern typing syntax (e.g., list[str] instead of List[str])
-- Include return type annotations
-- Be consistent with the existing codebase's typing style
+Your task is to add type hints to the given code without changing its behavior.
+
+Rules:
+
+- Only add type hints. Do not change the logic of the code.
+- The type hints should be as precise as possible.
+- If a function or variable already has a type hint, leave it as is unless it is incorrect or incomplete.
+- If the programming language does not support type hints, explain that to the user and do nothing.
+
