@@ -7,6 +7,7 @@ as ActionFactory.
 import logging
 from abc import ABC, abstractmethod
 from collections.abc import Callable
+import os
 from pprint import pp
 from subprocess import Popen
 from typing import Self, override
@@ -109,6 +110,24 @@ class Aider(AbstractAction):
         """
         return cls(f"/ask {prompt}", command, **kwargs)
 
+    @classmethod
+    def commit(cls, prompt: str, command: str, **kwargs: str) -> Self:
+        """Action to invoke the 'aider' CLI tool in "/commit" mode.
+
+        The prompt is used as the commit prompt by setting an environment
+        variable for aider. The prompt does not need a git diff as aider will
+        do this itself.
+
+        Args:
+            prompt: the prompt.
+            command: the command.
+
+        Returns:
+            Aider instance.
+        """
+        os.environ["AIDER_COMMIT_PROMPT"] = prompt
+        return cls("/commit", command, **kwargs)
+
     @override
     def __call__(self) -> None:
         """Execute the aider command with the prompt and files."""
@@ -178,4 +197,5 @@ class ActionFactory:
         }
         actions["aider-code"] = Aider.code
         actions["aider-ask"] = Aider.ask
+        actions["aider-commit"] = Aider.commit
         return actions

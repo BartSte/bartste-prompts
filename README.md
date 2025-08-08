@@ -48,6 +48,7 @@ The tool comes with these default commands:
 - `refactor`: Improve code structure
 - `typehints`: Add type hints to code
 - `unittests`: Generate unit tests
+- `commit`: Generate conventional commit messages
 
 ### Common Options
 
@@ -87,6 +88,12 @@ Run aider to fix Lua code:
 
 ```bash
 prompts fix --files script.lua --filetype lua --user "Fix memory leak" --action aider
+```
+
+Craft a Conventional Commit message for staged changes:
+
+```bash
+prompts commit --user "$(git diff)"
 ```
 
 ### Custom Instructions
