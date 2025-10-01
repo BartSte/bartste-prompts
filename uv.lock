@@ -17,7 +17,7 @@ wheels = [
 
 [[package]]
 name = "bartste-prompts"
-version = "1.1.0"
+version = "1.2.0a0"
 source = { editable = "." }
 dependencies = [
     { name = "pygeneral" },
