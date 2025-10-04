@@ -13,6 +13,7 @@ Key features include:
 - Integration with tools like `aider` for code editing and explanation
 - Can be extended with custom instructions
 - The CLI adapts to new instructions. No changes in code are necessary.
+- Question answering through the ask command for quick guidance
 
 ## Installation
 
@@ -42,6 +43,7 @@ prompts <command> [options]
 
 The tool comes with these default commands:
 
+- `ask`: Answer user questions directly
 - `docstrings`: Generate docstrings for given files
 - `explain`: Explain code functionality
 - `fix`: Fix code issues
@@ -88,6 +90,12 @@ Run aider to fix Lua code:
 
 ```bash
 prompts fix --files script.lua --filetype lua --user "Fix memory leak" --action aider
+```
+
+Ask a question using the default instructions:
+
+```bash
+prompts ask --user "What does the fix command do?"
 ```
 
 Craft a Conventional Commit message for staged changes:
