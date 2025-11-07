@@ -3,22 +3,13 @@ name = "bartste-prompts"
 version = "1.1.0"
 description = "A collection of prompts"
 requires-python = ">=3.10"
-authors = [
-    {name = "BartSte" },
-]
+authors = [{ name = "BartSte" }]
 readme = "README.md"
-license = {text = "MIT"}
-dependencies = [
-    "pygeneral"
-]
+license = { text = "MIT" }
+dependencies = ["pygeneral~=0.2"]
 
 [project.optional-dependencies]
-dev = [
-    "pre-commit>=3.0.0",
-    "pytest>=7.0.0",
-    "ipdb",
-    "ipython"
-]
+dev = ["pre-commit>=3.0.0", "pytest>=7.0.0", "ipdb", "ipython"]
 
 [project.scripts]
 prompts = "prompts.__main__:main"
@@ -30,10 +21,11 @@ exclude = ["tests", "__pycache__"]
 [tool.setuptools.package-data]
 prompts = ["_instructions/*.md", "_instructions/**/*.md"]
 
-[tool.ruff]
-line-length = 80
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
 
-[tool.black]
+[tool.ruff]
 line-length = 80
 
 [tool.isort]
@@ -41,10 +33,3 @@ line_length = 80
 
 [tool.flake8]
 max-line-length = 80
-
-[build-system]
-requires = ["setuptools>=42"]
-build-backend = "setuptools.build_meta"
-
-[tool.pyright]
-reportUnusedCallResult = false
