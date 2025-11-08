@@ -12,11 +12,9 @@
 ### Unit-testing guidelines
 
 1. **Framework**
-
    - Use the standard `unittest` framework `TestCase`.
 
 2. **Real I/O first, mock as needed**
-
    - Write black-box tests that exercise the true implementation with concrete inputs/outputs.
    - When a test would be **slow, flaky, or environment-dependent**—for example:
      - Network requests (`requests`, sockets, HTTP clients)
@@ -45,7 +43,10 @@ tests/
 
 As can be seen, test are kept separate from the source directory. Here the
 `tests` directory has the same package structure as the `src` directory where
-each directory and file are prefixed with `test_` (when applicable).
+each directory and file are prefixed with `test_` (when applicable). For
+example, the tests for `src/module/abc/example.py` would be located in
+`tests/test_module/test_abc/test_example.py`, or
+`tests/test_abc/test_example.py` if there is only one `module` folder.
 
 4. **Coverage & quality**
 
@@ -82,6 +83,5 @@ class FetchDataMockedTest(unittest.TestCase):
         mock_get.return_value.json.return_value = {"id": 1}
         self.assertEqual(fetch_data(1), {"id": 1})
         mock_get.assert_called_once_with("https://api.example.com/items/1")
-
 
 ```
