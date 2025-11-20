@@ -5,12 +5,15 @@ as ActionFactory.
 """
 
 import logging
+from pygeneral import process
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 import os
 from pprint import pp
 from subprocess import Popen
 from typing import Self, override
+
+from prompts.exceptions import AiderActionError
 
 
 class AbstractAction(ABC):
@@ -142,7 +145,10 @@ class Aider(AbstractAction):
             *files,
         ]
         logging.debug("Running command: %s", " ".join(cmd))
-        Popen(cmd).wait()
+        if process.stream_subprocess(cmd) != 0:
+            raise AiderActionError(
+                f"Aider command failed: {' '.join(cmd)}. Check logs for details."
+            )
 
 
 class ActionFactory:
