@@ -2,7 +2,9 @@ import argparse
 from contextlib import suppress
 from typing import TYPE_CHECKING
 
-from prompts import _logger, _paths
+import pygeneral.log
+
+from prompts import _paths
 from prompts.actions import ActionFactory
 from prompts.instructions import Instructions
 
@@ -135,7 +137,13 @@ def _func(args: argparse.Namespace) -> None:
     Args:
         args: Parsed command-line arguments.
     """
-    _logger.setup(args.loglevel, args.logfile)
+    logger = pygeneral.log.setup(
+        "bartste-prompts",
+        filename=args.logfile,
+        loglevel=args.loglevel,
+    )
+    logger.debug("Parsed arguments: %s", args)
+
     instructions = Instructions()
     kwargs = {
         x: getattr(args, x)
@@ -143,7 +151,9 @@ def _func(args: argparse.Namespace) -> None:
         if hasattr(args, x)
     }
     prompt: str = instructions.make_prompt(**kwargs)
+    logger.debug("Generated prompt: %s", prompt)
+
     factory: ActionFactory = ActionFactory(args.action)
     action: "AbstractAction" = factory.create(prompt, **kwargs)
-
+    logger.debug("Executing action: %s", args.action)
     action()

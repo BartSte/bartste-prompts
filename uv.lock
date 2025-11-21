@@ -19,7 +19,7 @@ dependencies = [
     { name = "pygeneral" },
 ]
 
-[package.optional-dependencies]
+[package.dev-dependencies]
 dev = [
     { name = "ipdb" },
     { name = "ipython" },
@@ -28,14 +28,15 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "ipdb", marker = "extra == 'dev'" },
-    { name = "ipython", marker = "extra == 'dev'" },
-    { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=3.0.0" },
-    { name = "pygeneral", specifier = "~=1.0.0" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0.0" },
+requires-dist = [{ name = "pygeneral", specifier = "~=1.1" }]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "ipdb" },
+    { name = "ipython" },
+    { name = "pre-commit", specifier = ">=3.0.0" },
+    { name = "pytest", specifier = ">=7.0.0" },
 ]
-provides-extras = ["dev"]
 
 [[package]]
 name = "cfgv"
@@ -284,11 +285,11 @@ wheels = [
 
 [[package]]
 name = "pygeneral"
-version = "1.0.2"
+version = "1.1.1"
 source = { registry = "https://gitlab.com/api/v4/groups/2265086/-/packages/pypi/simple/" }
-sdist = { url = "https://files.pythonhosted.org/packages/7b/b2/7e884a1737b4c8db763e43819d45d18537a10e0d7a49325898c268e833f7/pygeneral-1.0.2.tar.gz", hash = "sha256:e3fa5c0415b4df4cd79e5515979d078fdce3549e1f7ad7a059616cb47c3b45e9", size = 49368, upload-time = "2025-11-20T09:29:05.648Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/92/48/f82e115dfffd2ca4ee60f69abbe6cf335767e960581ede20103da643961c/pygeneral-1.1.1.tar.gz", hash = "sha256:507a0655c81a7e30b830c11d218fcf15edac105b286abd072609d7ef817fee78", size = 30862, upload-time = "2025-11-21T06:55:34.852Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5e/57/9ed582eb1f07ed99a89f2d70cc5771fbe19b0fdb6bd1c743c196493e3142/pygeneral-1.0.2-py3-none-any.whl", hash = "sha256:52dbac1b5a20672853209579f79096034e66d08adb2d01877df8998a031c2268", size = 14686, upload-time = "2025-11-20T09:29:04.603Z" },
+    { url = "https://files.pythonhosted.org/packages/f5/e0/cf5e4f8e33fd49cf9739b3a10e78c05c05c3ea482d59941f5493ba5828b3/pygeneral-1.1.1-py3-none-any.whl", hash = "sha256:a10d59e601dffe1a0a7cf90cb135985c253f21cce967029c7ec8d7a5135424bb", size = 15884, upload-time = "2025-11-21T06:55:33.371Z" },
 ]
 
 [[package]]

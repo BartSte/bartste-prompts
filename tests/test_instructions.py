@@ -4,7 +4,6 @@ import os
 import shutil
 import tempfile
 import unittest
-import logging
 
 from prompts.instructions import Instructions
 from prompts.exceptions import InstructionNotFoundError

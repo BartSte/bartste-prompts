@@ -4,14 +4,15 @@ Defines AbstractAction and concrete action classes for invoking tools, as well
 as ActionFactory.
 """
 
-import logging
-from pygeneral import process
+from prompts._logger import logger
+import os
+import sys
 from abc import ABC, abstractmethod
 from collections.abc import Callable
-import os
 from pprint import pp
-from subprocess import Popen
 from typing import Self, override
+
+from pygeneral import process
 
 from prompts.exceptions import AiderActionError
 
@@ -144,8 +145,13 @@ class Aider(AbstractAction):
             f"{self.prompt}",
             *files,
         ]
-        logging.debug("Running command: %s", " ".join(cmd))
-        if process.stream_subprocess(cmd) != 0:
+        logger.debug("Running command: %s", " ".join(cmd))
+        return_code: int = process.stream_subprocess(
+            cmd,
+            stdout=[sys.stdout, logger.info],
+            stderr=[sys.stderr, logger.info],
+        )
+        if return_code != 0:
             raise AiderActionError(
                 f"Aider command failed: {' '.join(cmd)}. Check logs for details."
             )

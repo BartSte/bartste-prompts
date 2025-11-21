@@ -6,13 +6,19 @@ requires-python = ">=3.12"
 authors = [{ name = "BartSte" }]
 readme = "README.md"
 license = { text = "MIT" }
-dependencies = ["pygeneral~=1.0"]
+dependencies = ["pygeneral~=1.1"]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = ["pre-commit>=3.0.0", "pytest>=7.0.0", "ipdb", "ipython"]
 
 [project.scripts]
 prompts = "prompts.__main__:main"
+
+# Build system configuration
+
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -21,15 +27,36 @@ exclude = ["tests", "__pycache__"]
 [tool.setuptools.package-data]
 prompts = ["_instructions/*.md", "_instructions/**/*.md"]
 
-[build-system]
-requires = ["setuptools>=42"]
-build-backend = "setuptools.build_meta"
+# Linter, formatter, type checker, and test configurations from here on
+
+[tool.pyright]
+include = ["src/pygeneral", "tests"]
+exclude = ["**/__pycache__", ".git", ".pytest_cache", "extras"]
+ignore = []
+defineConstant = {}
+
+reportImplicitStringConcatenation = false
+reportMissingImports = true
+reportMissingTypeStubs = false
+reportUnusedCallResult = false
+
+pythonVersion = "3.13"
 
 [tool.ruff]
 line-length = 80
 
-[tool.isort]
-line_length = 80
+select = [
+    "F", # pyflakes
+    "E", # pycodestyle errors
+    "W", # pycodestyle warnings
+    "I", # isort
+    "N", # PEP8 naming
+]
 
-[tool.flake8]
-max-line-length = 80
+[tool.pytest.ini_options]
+addopts = "-s -rA --log-level INFO"
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ipdb]
+context = 9

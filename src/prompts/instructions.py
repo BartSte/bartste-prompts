@@ -1,4 +1,4 @@
-import logging
+from prompts._logger import logger
 import os
 from os.path import exists, join, splitext
 
@@ -55,7 +55,7 @@ class Instructions:
             directory: The directory path where instructions are stored.
         """
         self._directory = directory
-        logging.info("Using instructions directory: %s", self._directory)
+        logger.info("Using instructions directory: %s", self._directory)
 
     def make_prompt(self, command: str, **kwargs: str) -> str:
         """Assemble the full prompt from the instructions.
@@ -68,7 +68,7 @@ class Instructions:
         instructions.extend(
             [self._get(command, key, value) for key, value in kwargs.items()]
         )
-        logging.debug("Instruction list: %s", instructions)
+        logger.debug("Instruction list: %s", instructions)
         return "\n".join([x for x in instructions if x])
 
     def _get(self, command: str, key: str, value: str = "") -> str:
@@ -109,7 +109,7 @@ class Instructions:
         """
         path: str = self.find(command, *args)
         with open(path, "r", encoding="utf-8") as file:
-            logging.debug("Reading instruction from '%s'", path)
+            logger.debug("Reading instruction from '%s'", path)
             return file.read()
 
     def find(self, command: str, *args: str) -> str:
@@ -132,7 +132,7 @@ class Instructions:
         default = self._join("default", *args)
         for path in (custom, default):
             if exists(path):
-                logging.debug("Instruction found in '%s'", path)
+                logger.debug("Instruction found in '%s'", path)
                 return path
 
         raise InstructionNotFoundError(
@@ -173,7 +173,7 @@ class Instructions:
         try:
             return set(splitext(x)[0] for x in os.listdir(directory))
         except FileNotFoundError:
-            logging.error("Directory not found: %s", directory)
+            logger.error("Directory not found: %s", directory)
             return set()
 
     def list(self, command: str = "") -> set[str]:
