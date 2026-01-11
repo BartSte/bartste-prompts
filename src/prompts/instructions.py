@@ -1,8 +1,9 @@
-from prompts._logger import logger
 import os
+from contextlib import suppress
 from os.path import exists, join, splitext
 
 from prompts import _paths
+from prompts._logger import logger
 from prompts.exceptions import InstructionNotFoundError
 
 
@@ -89,10 +90,19 @@ class Instructions:
         Raises:
             InstructionNotFoundError: If the instruction file is not found.
         """
-        try:
+        with suppress(InstructionNotFoundError):
             return self.read(command, f"{key}.md").format(**{key: value})
-        except InstructionNotFoundError:
+
+        with suppress(InstructionNotFoundError):
             return self.read(command, key, f"{value}.md")
+
+        try:
+            return self.read(command, key, "default.md")
+        except InstructionNotFoundError as error:
+            raise InstructionNotFoundError(
+                f"Instruction for key '{key}' with value '{value}' not found."
+                "Also, no 'default.md' fallback was found."
+            ) from error
 
     def read(self, command: str, *args: str) -> str:
         """Read the contents of an instruction file.
